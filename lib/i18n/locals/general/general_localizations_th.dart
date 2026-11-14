@@ -158,4 +158,57 @@ class GeneralLocalizationsTh extends GeneralLocalizations {
   String msg_quest_reward_claimed(int xp) {
     return 'ปลดล็อกสำเร็จ! ได้รับ +$xp XP';
   }
+
+  @override
+  String get settings_title => 'การตั้งค่า & โปรไฟล์';
+
+  @override
+  String xp_and_streak(int xp, int days) {
+    return '$xp XP · $days วันต่อเนื่อง';
+  }
+
+  @override
+  String get general_preferences => 'การตั้งค่าทั่วไป';
+
+  @override
+  String get appearance => 'ธีมการแสดงผล';
+
+  @override
+  String get backup_and_data => 'สำรอง & กู้คืนข้อมูล';
+
+  @override
+  String get backup_and_data_subtitle => 'ส่งออก / นำเข้าไฟล์ JSON';
+
+  @override
+  String get manage => 'จัดการ';
+
+  @override
+  String get saved_success => 'บันทึกสำเร็จ!';
+
+  @override
+  String get tab_export => 'สำรอง (Export)';
+
+  @override
+  String get tab_import => 'กู้คืน (Import)';
+
+  @override
+  String get tab_reset => 'รีเซ็ต (Reset)';
+
+  @override
+  String get export_hint => 'สำรองข้อมูล JSON (แชร์ใช้งานกับเว็บได้):';
+
+  @override
+  String get copy_json_backup => 'คัดลอก JSON Backup';
+
+  @override
+  String get import_hint => 'วางข้อมูล JSON ที่ Export มาจาก Web หรือ Mobile:';
+
+  @override
+  String get import_and_restore => 'นำเข้าและกู้คืนข้อมูล';
+
+  @override
+  String get reset_description => 'ข้อมูลธุรกรรม สถิติ และเควสจะถูกคืนค่ากลับเป็นชุดตัวอย่างเริ่มต้น';
+
+  @override
+  String get reset_confirm_button => 'ยืนยันการล้างข้อมูล (Reset All)';
 }

@@ -191,23 +191,23 @@ abstract class GamificationLocalizations {
   /// **'Transfer savings to emergency reserve fund'**
   String get quest_q3;
 
-  /// Default daily quest q1
+  /// Completed ✓
   ///
   /// In en, this message translates to:
-  /// **'Record all daily expenses for today'**
-  String get quest_q1_title;
+  /// **'Completed ✓'**
+  String get quest_status_completed;
 
-  /// Default daily quest q2
+  /// Pending
   ///
   /// In en, this message translates to:
-  /// **'Review your 50/30/20 budget allocation'**
-  String get quest_q2_title;
+  /// **'Pending'**
+  String get quest_status_pending;
 
-  /// Default daily quest q3
+  /// Claim & Continue 🚀
   ///
   /// In en, this message translates to:
-  /// **'Transfer savings to emergency reserve fund'**
-  String get quest_q3_title;
+  /// **'Claim & Continue 🚀'**
+  String get claim_and_continue;
 }
 
 class _GamificationLocalizationsDelegate extends LocalizationsDelegate<GamificationLocalizations> {

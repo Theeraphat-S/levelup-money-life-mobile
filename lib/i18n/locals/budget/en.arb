@@ -59,5 +59,29 @@
   "total_must_be_100": "Total allocation must equal 100%",
   "@total_must_be_100": {
     "description": "Validation error message"
+  },
+  "budget_saved_success": "50/30/20 budget plan saved!",
+  "@budget_saved_success": {
+    "description": "50/30/20 budget plan saved!"
+  },
+  "bucket_progress_title": "Bucket Budget Progress:",
+  "@bucket_progress_title": {
+    "description": "Bucket Budget Progress:"
+  },
+  "bucket_needs": "Needs",
+  "@bucket_needs": {
+    "description": "Needs"
+  },
+  "bucket_wants": "Wants",
+  "@bucket_wants": {
+    "description": "Wants"
+  },
+  "bucket_savings": "Savings",
+  "@bucket_savings": {
+    "description": "Savings"
+  },
+  "on_track": "On Track",
+  "@on_track": {
+    "description": "On Track"
   }
 }

@@ -219,5 +219,81 @@
         "type": "int"
       }
     }
+  },
+  "settings_title": "การตั้งค่า & โปรไฟล์",
+  "@settings_title": {
+    "description": "Settings & Profile"
+  },
+  "xp_and_streak": "{xp} XP · {days} วันต่อเนื่อง",
+  "@xp_and_streak": {
+    "description": "{xp} XP · {days} Day Streak",
+    "placeholders": {
+      "xp": {
+        "type": "int"
+      },
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "general_preferences": "การตั้งค่าทั่วไป",
+  "@general_preferences": {
+    "description": "General Preferences"
+  },
+  "appearance": "ธีมการแสดงผล",
+  "@appearance": {
+    "description": "Appearance"
+  },
+  "backup_and_data": "สำรอง & กู้คืนข้อมูล",
+  "@backup_and_data": {
+    "description": "Backup & Data Management"
+  },
+  "backup_and_data_subtitle": "ส่งออก / นำเข้าไฟล์ JSON",
+  "@backup_and_data_subtitle": {
+    "description": "Export / Import JSON Data"
+  },
+  "manage": "จัดการ",
+  "@manage": {
+    "description": "Manage"
+  },
+  "saved_success": "บันทึกสำเร็จ!",
+  "@saved_success": {
+    "description": "Saved!"
+  },
+  "tab_export": "สำรอง (Export)",
+  "@tab_export": {
+    "description": "Export"
+  },
+  "tab_import": "กู้คืน (Import)",
+  "@tab_import": {
+    "description": "Import"
+  },
+  "tab_reset": "รีเซ็ต (Reset)",
+  "@tab_reset": {
+    "description": "Reset"
+  },
+  "export_hint": "สำรองข้อมูล JSON (แชร์ใช้งานกับเว็บได้):",
+  "@export_hint": {
+    "description": "JSON backup (also works with the web app):"
+  },
+  "copy_json_backup": "คัดลอก JSON Backup",
+  "@copy_json_backup": {
+    "description": "Copy JSON Backup"
+  },
+  "import_hint": "วางข้อมูล JSON ที่ Export มาจาก Web หรือ Mobile:",
+  "@import_hint": {
+    "description": "Paste JSON exported from the web or mobile app:"
+  },
+  "import_and_restore": "นำเข้าและกู้คืนข้อมูล",
+  "@import_and_restore": {
+    "description": "Import & Restore"
+  },
+  "reset_description": "ข้อมูลธุรกรรม สถิติ และเควสจะถูกคืนค่ากลับเป็นชุดตัวอย่างเริ่มต้น",
+  "@reset_description": {
+    "description": "Transactions, stats and quests will be reset to the default sample data."
+  },
+  "reset_confirm_button": "ยืนยันการล้างข้อมูล (Reset All)",
+  "@reset_confirm_button": {
+    "description": "Confirm Reset All"
   }
 }

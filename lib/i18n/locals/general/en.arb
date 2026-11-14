@@ -219,5 +219,81 @@
         "type": "int"
       }
     }
+  },
+  "settings_title": "Settings & Profile",
+  "@settings_title": {
+    "description": "Settings & Profile"
+  },
+  "xp_and_streak": "{xp} XP · {days} Day Streak",
+  "@xp_and_streak": {
+    "description": "{xp} XP · {days} Day Streak",
+    "placeholders": {
+      "xp": {
+        "type": "int"
+      },
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "general_preferences": "General Preferences",
+  "@general_preferences": {
+    "description": "General Preferences"
+  },
+  "appearance": "Appearance",
+  "@appearance": {
+    "description": "Appearance"
+  },
+  "backup_and_data": "Backup & Data Management",
+  "@backup_and_data": {
+    "description": "Backup & Data Management"
+  },
+  "backup_and_data_subtitle": "Export / Import JSON Data",
+  "@backup_and_data_subtitle": {
+    "description": "Export / Import JSON Data"
+  },
+  "manage": "Manage",
+  "@manage": {
+    "description": "Manage"
+  },
+  "saved_success": "Saved!",
+  "@saved_success": {
+    "description": "Saved!"
+  },
+  "tab_export": "Export",
+  "@tab_export": {
+    "description": "Export"
+  },
+  "tab_import": "Import",
+  "@tab_import": {
+    "description": "Import"
+  },
+  "tab_reset": "Reset",
+  "@tab_reset": {
+    "description": "Reset"
+  },
+  "export_hint": "JSON backup (also works with the web app):",
+  "@export_hint": {
+    "description": "JSON backup (also works with the web app):"
+  },
+  "copy_json_backup": "Copy JSON Backup",
+  "@copy_json_backup": {
+    "description": "Copy JSON Backup"
+  },
+  "import_hint": "Paste JSON exported from the web or mobile app:",
+  "@import_hint": {
+    "description": "Paste JSON exported from the web or mobile app:"
+  },
+  "import_and_restore": "Import & Restore",
+  "@import_and_restore": {
+    "description": "Import & Restore"
+  },
+  "reset_description": "Transactions, stats and quests will be reset to the default sample data.",
+  "@reset_description": {
+    "description": "Transactions, stats and quests will be reset to the default sample data."
+  },
+  "reset_confirm_button": "Confirm Reset All",
+  "@reset_confirm_button": {
+    "description": "Confirm Reset All"
   }
 }

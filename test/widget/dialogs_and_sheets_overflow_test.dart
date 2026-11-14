@@ -95,12 +95,13 @@ void main() {
     required Widget child,
     required double width,
     double height = 800,
+    Locale locale = const Locale('th'),
   }) {
     return ToastificationWrapper(
       child: MaterialApp(
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
-        locale: const Locale('th'),
+        locale: locale,
         home: MediaQuery(
           data: MediaQueryData(
             size: Size(width, height),
@@ -142,7 +143,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byType(SlipScanSheet), findsOneWidget);
-      expect(find.text('สแกนสลิปโอนเงิน (OCR)'), findsOneWidget);
+      expect(find.text('สแกนสลิปโอนเงิน'), findsOneWidget);
       expect(tester.takeException(), isNull);
     });
 
@@ -210,6 +211,50 @@ void main() {
       expect(find.text('LEVEL UP!'), findsOneWidget);
       expect(find.text('Claim & Continue 🚀'), findsNothing); // Locale is 'th'
       expect(find.text('รับพลังและก้าวต่อไป 🚀'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    });
+  });
+
+  group('Widgets follow the English locale', () {
+    Future<void> pumpEn(WidgetTester tester, Widget child) async {
+      tester.view.physicalSize = const Size(360, 800);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      await tester.pumpWidget(buildTestableWidget(
+        child: child,
+        width: 360,
+        locale: const Locale('en'),
+      ));
+      await tester.pump(const Duration(milliseconds: 300));
+      await tester.pump(const Duration(seconds: 2));
+    }
+
+    testWidgets('SlipScanSheet', (tester) async {
+      await pumpEn(tester, const SlipScanSheet());
+      expect(find.text('Scan Transfer Slip'), findsOneWidget);
+      expect(find.text('Pick a sample slip to try scanning (Demo OCR):'),
+          findsOneWidget);
+      expect(find.text('สแกนสลิปโอนเงิน'), findsNothing);
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('DataManagerDialog', (tester) async {
+      await pumpEn(tester, const DataManagerDialog());
+      for (final label in ['Data Manager', 'Export', 'Import', 'Reset']) {
+        expect(find.text(label), findsOneWidget, reason: label);
+      }
+      expect(find.text('สำรอง (Export)'), findsNothing);
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('LevelUpDialog', (tester) async {
+      await pumpEn(
+        tester,
+        const LevelUpDialog(level: 5, rankTitle: 'Financial Master'),
+      );
+      expect(find.text('Claim & Continue 🚀'), findsOneWidget);
+      expect(find.text('Congratulations! You reached Level 5!'), findsOneWidget);
       expect(tester.takeException(), isNull);
     });
   });

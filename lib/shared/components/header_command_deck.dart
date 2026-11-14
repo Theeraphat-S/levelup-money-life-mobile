@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:levelup_money_life/i18n/i18n.dart';
 import 'package:levelup_money_life/feature/gamification/bloc/gamification_bloc.dart';
 import 'package:levelup_money_life/feature/gamification/bloc/gamification_state.dart';
 import 'package:levelup_money_life/shared/bloc/app/app_bloc.dart';
@@ -147,7 +148,7 @@ class HeaderCommandDeck extends StatelessWidget implements PreferredSizeWidget {
                   final level = user?.level ?? 1;
 
                   return Tooltip(
-                    message: 'การตั้งค่า & โปรไฟล์',
+                    message: AppLocalizations(context).general.settings_title,
                     child: Material(
                       color: Colors.transparent,
                       child: InkWell(

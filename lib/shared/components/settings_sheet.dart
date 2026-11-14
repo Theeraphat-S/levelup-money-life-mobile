@@ -1,5 +1,6 @@
 ﻿import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:levelup_money_life/i18n/i18n.dart';
 import 'package:levelup_money_life/feature/gamification/bloc/gamification_bloc.dart';
 import 'package:levelup_money_life/feature/gamification/bloc/gamification_state.dart';
 import 'package:levelup_money_life/shared/bloc/app/app_bloc.dart';
@@ -78,7 +79,7 @@ class SettingsSheet extends StatelessWidget {
                   ),
                   const SizedBox(width: 10),
                   Text(
-                    isThai ? 'การตั้งค่า & โปรไฟล์' : 'Settings & Profile',
+                    AppLocalizations(context).general.settings_title,
                     style: TextStyle(
                       fontSize: 17,
                       fontWeight: FontWeight.w800,
@@ -139,7 +140,7 @@ class SettingsSheet extends StatelessWidget {
                                 ),
                               ),
                               Text(
-                                '${user.totalXp} XP · ${user.streakDays} ${isThai ? 'วันต่อเนื่อง' : 'Day Streak'}',
+                                AppLocalizations(context).general.xp_and_streak(user.totalXp, user.streakDays),
                                 style: TextStyle(
                                   fontSize: 11,
                                   color: PColor.inkSoft(context),
@@ -165,7 +166,7 @@ class SettingsSheet extends StatelessWidget {
 
           // Section 2: Preferences
           Text(
-            isThai ? 'การตั้งค่าทั่วไป' : 'General Preferences',
+            AppLocalizations(context).general.general_preferences,
             style: TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w700,
@@ -182,8 +183,8 @@ class SettingsSheet extends StatelessWidget {
               return _buildSettingTile(
                 context: context,
                 icon: Icons.translate_rounded,
-                title: isThai ? 'ภาษา (Language)' : 'Language',
-                subtitle: isTh ? 'ภาษาไทย' : 'English',
+                title: AppLocalizations(context).general.language,
+                subtitle: isTh ? AppLocalizations(context).general.thai : AppLocalizations(context).general.english,
                 trailing: SegmentedButton<String>(
                   segments: const [
                     ButtonSegment(value: 'th', label: Text('TH')),
@@ -210,11 +211,11 @@ class SettingsSheet extends StatelessWidget {
           BlocBuilder<AppGlobalBloc, AppGlobalState>(
             builder: (context, appState) {
               final currentMode = appState.themeMode;
-              String modeSubtitle = isThai ? 'ตามระบบ' : 'System';
+              String modeSubtitle = AppLocalizations(context).general.theme_system;
               if (currentMode == ThemeMode.light) {
-                modeSubtitle = isThai ? 'โหมดสว่าง' : 'Light Mode';
+                modeSubtitle = AppLocalizations(context).general.theme_light;
               } else if (currentMode == ThemeMode.dark) {
-                modeSubtitle = isThai ? 'โหมดมืด' : 'Dark Mode';
+                modeSubtitle = AppLocalizations(context).general.theme_dark;
               }
 
               IconData modeIcon = Icons.brightness_auto_rounded;
@@ -227,7 +228,7 @@ class SettingsSheet extends StatelessWidget {
               return _buildSettingTile(
                 context: context,
                 icon: modeIcon,
-                title: isThai ? 'ธีมการแสดงผล' : 'Appearance',
+                title: AppLocalizations(context).general.appearance,
                 subtitle: modeSubtitle,
                 trailing: SegmentedButton<ThemeMode>(
                   segments: const [
@@ -266,15 +267,15 @@ class SettingsSheet extends StatelessWidget {
           _buildSettingTile(
             context: context,
             icon: Icons.storage_rounded,
-            title: isThai ? 'สำรอง & กู้คืนข้อมูล' : 'Backup & Data Management',
-            subtitle: isThai ? 'ส่งออก / นำเข้าไฟล์ JSON' : 'Export / Import JSON Data',
+            title: AppLocalizations(context).general.backup_and_data,
+            subtitle: AppLocalizations(context).general.backup_and_data_subtitle,
             trailing: ElevatedButton.icon(
               onPressed: () {
                 Navigator.of(context).pop();
                 DataManagerDialog.show(context);
               },
               icon: const Icon(Icons.folder_open_rounded, size: 14),
-              label: Text(isThai ? 'จัดการ' : 'Manage', style: const TextStyle(fontSize: 12)),
+              label: Text(AppLocalizations(context).general.manage, style: const TextStyle(fontSize: 12)),
               style: ElevatedButton.styleFrom(
                 backgroundColor: PColor.surfaceSubtle(context),
                 foregroundColor: PColor.ink(context),

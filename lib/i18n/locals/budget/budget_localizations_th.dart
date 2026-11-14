@@ -52,4 +52,22 @@ class BudgetLocalizationsTh extends BudgetLocalizations {
 
   @override
   String get total_must_be_100 => 'สัดส่วนรวมต้องเท่ากับ 100%';
+
+  @override
+  String get budget_saved_success => 'บันทึกแผนการจัดสรรงบประมาณ 50/30/20 สำเร็จ!';
+
+  @override
+  String get bucket_progress_title => 'ติดตามการใช้จ่ายจริงเทียบกับงบประมาณ (Bucket Progress):';
+
+  @override
+  String get bucket_needs => 'จำเป็น (Needs)';
+
+  @override
+  String get bucket_wants => 'ต้องการ (Wants)';
+
+  @override
+  String get bucket_savings => 'เงินออม (Savings)';
+
+  @override
+  String get on_track => 'อยู่ในงบ';
 }

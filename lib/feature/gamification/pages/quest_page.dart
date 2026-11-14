@@ -208,8 +208,8 @@ class _QuestPageViewState extends State<_QuestPageView> {
                                       ),
                                       subtitle: Text(
                                         quest.done
-                                            ? (currentLang == 'th' ? 'ทำสำเร็จแล้ว ✓' : 'Completed ✓')
-                                            : (currentLang == 'th' ? 'ยังไม่เสร็จสิ้น' : 'Pending'),
+                                            ? AppLocalizations(context).gamification.quest_status_completed
+                                            : AppLocalizations(context).gamification.quest_status_pending,
                                         style: TextStyle(
                                           fontSize: 11,
                                           color: quest.done

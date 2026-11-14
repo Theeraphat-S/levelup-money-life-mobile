@@ -364,6 +364,108 @@ abstract class GeneralLocalizations {
   /// In en, this message translates to:
   /// **'Reward claimed! +{xp} XP'**
   String msg_quest_reward_claimed(int xp);
+
+  /// Settings & Profile
+  ///
+  /// In en, this message translates to:
+  /// **'Settings & Profile'**
+  String get settings_title;
+
+  /// {xp} XP · {days} Day Streak
+  ///
+  /// In en, this message translates to:
+  /// **'{xp} XP · {days} Day Streak'**
+  String xp_and_streak(int xp, int days);
+
+  /// General Preferences
+  ///
+  /// In en, this message translates to:
+  /// **'General Preferences'**
+  String get general_preferences;
+
+  /// Appearance
+  ///
+  /// In en, this message translates to:
+  /// **'Appearance'**
+  String get appearance;
+
+  /// Backup & Data Management
+  ///
+  /// In en, this message translates to:
+  /// **'Backup & Data Management'**
+  String get backup_and_data;
+
+  /// Export / Import JSON Data
+  ///
+  /// In en, this message translates to:
+  /// **'Export / Import JSON Data'**
+  String get backup_and_data_subtitle;
+
+  /// Manage
+  ///
+  /// In en, this message translates to:
+  /// **'Manage'**
+  String get manage;
+
+  /// Saved!
+  ///
+  /// In en, this message translates to:
+  /// **'Saved!'**
+  String get saved_success;
+
+  /// Export
+  ///
+  /// In en, this message translates to:
+  /// **'Export'**
+  String get tab_export;
+
+  /// Import
+  ///
+  /// In en, this message translates to:
+  /// **'Import'**
+  String get tab_import;
+
+  /// Reset
+  ///
+  /// In en, this message translates to:
+  /// **'Reset'**
+  String get tab_reset;
+
+  /// JSON backup (also works with the web app):
+  ///
+  /// In en, this message translates to:
+  /// **'JSON backup (also works with the web app):'**
+  String get export_hint;
+
+  /// Copy JSON Backup
+  ///
+  /// In en, this message translates to:
+  /// **'Copy JSON Backup'**
+  String get copy_json_backup;
+
+  /// Paste JSON exported from the web or mobile app:
+  ///
+  /// In en, this message translates to:
+  /// **'Paste JSON exported from the web or mobile app:'**
+  String get import_hint;
+
+  /// Import & Restore
+  ///
+  /// In en, this message translates to:
+  /// **'Import & Restore'**
+  String get import_and_restore;
+
+  /// Transactions, stats and quests will be reset to the default sample data.
+  ///
+  /// In en, this message translates to:
+  /// **'Transactions, stats and quests will be reset to the default sample data.'**
+  String get reset_description;
+
+  /// Confirm Reset All
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm Reset All'**
+  String get reset_confirm_button;
 }
 
 class _GeneralLocalizationsDelegate extends LocalizationsDelegate<GeneralLocalizations> {

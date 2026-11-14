@@ -274,6 +274,138 @@ abstract class TransactionLocalizations {
   /// In en, this message translates to:
   /// **'You earned +{xp} XP!'**
   String exp_reward_msg(int xp);
+
+  /// Mark All Cleared
+  ///
+  /// In en, this message translates to:
+  /// **'Mark All Cleared'**
+  String get mark_all_cleared;
+
+  /// Unmark All Cleared
+  ///
+  /// In en, this message translates to:
+  /// **'Unmark All Cleared'**
+  String get unmark_all_cleared;
+
+  /// Pinned "{name}" as a QuickTemplate ⭐
+  ///
+  /// In en, this message translates to:
+  /// **'Pinned \"{name}\" as a QuickTemplate ⭐'**
+  String template_pinned(String name);
+
+  /// Please enter an amount
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter an amount'**
+  String get enter_amount;
+
+  /// Income saved
+  ///
+  /// In en, this message translates to:
+  /// **'Income saved'**
+  String get income_saved;
+
+  /// Expense saved
+  ///
+  /// In en, this message translates to:
+  /// **'Expense saved'**
+  String get expense_saved;
+
+  /// Transaction name
+  ///
+  /// In en, this message translates to:
+  /// **'Transaction name'**
+  String get quick_name_hint;
+
+  /// Pin as QuickTemplate
+  ///
+  /// In en, this message translates to:
+  /// **'Pin as QuickTemplate'**
+  String get pin_template_tooltip;
+
+  /// Add Note
+  ///
+  /// In en, this message translates to:
+  /// **'Add Note'**
+  String get add_note_tooltip;
+
+  /// Add note (+5 XP)
+  ///
+  /// In en, this message translates to:
+  /// **'Add note (+5 XP)'**
+  String get note_hint_xp;
+
+  /// Slip scanned! Transaction saved +{xp} XP
+  ///
+  /// In en, this message translates to:
+  /// **'Slip scanned! Transaction saved +{xp} XP'**
+  String slip_scan_saved(int xp);
+
+  /// Pick a slip image from your gallery, or choose a sample template
+  ///
+  /// In en, this message translates to:
+  /// **'Pick a slip image from your gallery, or choose a sample template'**
+  String get slip_select_hint;
+
+  /// Supports slips from all banks (KBank, SCB, BBL, KTB, TrueMoney)
+  ///
+  /// In en, this message translates to:
+  /// **'Supports slips from all banks (KBank, SCB, BBL, KTB, TrueMoney)'**
+  String get slip_supported_banks;
+
+  /// Pick a sample slip to try scanning (Demo OCR):
+  ///
+  /// In en, this message translates to:
+  /// **'Pick a sample slip to try scanning (Demo OCR):'**
+  String get slip_demo_label;
+
+  /// Scan
+  ///
+  /// In en, this message translates to:
+  /// **'Scan'**
+  String get slip_scan_button;
+
+  /// Reading text on the slip...
+  ///
+  /// In en, this message translates to:
+  /// **'Reading text on the slip...'**
+  String get slip_analyzing;
+
+  /// Slip analysis result:
+  ///
+  /// In en, this message translates to:
+  /// **'Slip analysis result:'**
+  String get slip_result_title;
+
+  /// • Item: {value}
+  ///
+  /// In en, this message translates to:
+  /// **'• Item: {value}'**
+  String slip_field_item(String value);
+
+  /// • Amount: ฿{value}
+  ///
+  /// In en, this message translates to:
+  /// **'• Amount: ฿{value}'**
+  String slip_field_amount(String value);
+
+  /// • Category: {value}
+  ///
+  /// In en, this message translates to:
+  /// **'• Category: {value}'**
+  String slip_field_category(String value);
+
+  /// • Bank: {value}
+  ///
+  /// In en, this message translates to:
+  /// **'• Bank: {value}'**
+  String slip_field_bank(String value);
+
+  /// Confirm & Save Transaction
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm & Save Transaction'**
+  String get slip_confirm_save;
 }
 
 class _TransactionLocalizationsDelegate extends LocalizationsDelegate<TransactionLocalizations> {

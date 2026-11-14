@@ -95,16 +95,16 @@
   "@quest_q3": {
     "description": "Default quest 3"
   },
-  "quest_q1_title": "บันทึกรายจ่ายประจำวันทุกรายการวันนี้",
-  "@quest_q1_title": {
-    "description": "Default daily quest q1"
+  "quest_status_completed": "ทำสำเร็จแล้ว ✓",
+  "@quest_status_completed": {
+    "description": "Completed ✓"
   },
-  "quest_q2_title": "ตรวจสอบสัดส่วนการจัดสรรงบประมาณ 50/30/20",
-  "@quest_q2_title": {
-    "description": "Default daily quest q2"
+  "quest_status_pending": "ยังไม่เสร็จสิ้น",
+  "@quest_status_pending": {
+    "description": "Pending"
   },
-  "quest_q3_title": "โอนเงินเก็บเข้าบัญชีเงินออมสำรองฉุกเฉิน",
-  "@quest_q3_title": {
-    "description": "Default daily quest q3"
+  "claim_and_continue": "รับพลังและก้าวต่อไป 🚀",
+  "@claim_and_continue": {
+    "description": "Claim & Continue 🚀"
   }
 }

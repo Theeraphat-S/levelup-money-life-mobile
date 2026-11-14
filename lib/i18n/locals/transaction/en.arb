@@ -124,5 +124,123 @@
         "type": "int"
       }
     }
+  },
+  "mark_all_cleared": "Mark All Cleared",
+  "@mark_all_cleared": {
+    "description": "Mark All Cleared"
+  },
+  "unmark_all_cleared": "Unmark All Cleared",
+  "@unmark_all_cleared": {
+    "description": "Unmark All Cleared"
+  },
+  "template_pinned": "Pinned \"{name}\" as a QuickTemplate ⭐",
+  "@template_pinned": {
+    "description": "Pinned \"{name}\" as a QuickTemplate ⭐",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "enter_amount": "Please enter an amount",
+  "@enter_amount": {
+    "description": "Please enter an amount"
+  },
+  "income_saved": "Income saved",
+  "@income_saved": {
+    "description": "Income saved"
+  },
+  "expense_saved": "Expense saved",
+  "@expense_saved": {
+    "description": "Expense saved"
+  },
+  "quick_name_hint": "Transaction name",
+  "@quick_name_hint": {
+    "description": "Transaction name"
+  },
+  "pin_template_tooltip": "Pin as QuickTemplate",
+  "@pin_template_tooltip": {
+    "description": "Pin as QuickTemplate"
+  },
+  "add_note_tooltip": "Add Note",
+  "@add_note_tooltip": {
+    "description": "Add Note"
+  },
+  "note_hint_xp": "Add note (+5 XP)",
+  "@note_hint_xp": {
+    "description": "Add note (+5 XP)"
+  },
+  "slip_scan_saved": "Slip scanned! Transaction saved +{xp} XP",
+  "@slip_scan_saved": {
+    "description": "Slip scanned! Transaction saved +{xp} XP",
+    "placeholders": {
+      "xp": {
+        "type": "int"
+      }
+    }
+  },
+  "slip_select_hint": "Pick a slip image from your gallery, or choose a sample template",
+  "@slip_select_hint": {
+    "description": "Pick a slip image from your gallery, or choose a sample template"
+  },
+  "slip_supported_banks": "Supports slips from all banks (KBank, SCB, BBL, KTB, TrueMoney)",
+  "@slip_supported_banks": {
+    "description": "Supports slips from all banks (KBank, SCB, BBL, KTB, TrueMoney)"
+  },
+  "slip_demo_label": "Pick a sample slip to try scanning (Demo OCR):",
+  "@slip_demo_label": {
+    "description": "Pick a sample slip to try scanning (Demo OCR):"
+  },
+  "slip_scan_button": "Scan",
+  "@slip_scan_button": {
+    "description": "Scan"
+  },
+  "slip_analyzing": "Reading text on the slip...",
+  "@slip_analyzing": {
+    "description": "Reading text on the slip..."
+  },
+  "slip_result_title": "Slip analysis result:",
+  "@slip_result_title": {
+    "description": "Slip analysis result:"
+  },
+  "slip_field_item": "• Item: {value}",
+  "@slip_field_item": {
+    "description": "• Item: {value}",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "slip_field_amount": "• Amount: ฿{value}",
+  "@slip_field_amount": {
+    "description": "• Amount: ฿{value}",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "slip_field_category": "• Category: {value}",
+  "@slip_field_category": {
+    "description": "• Category: {value}",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "slip_field_bank": "• Bank: {value}",
+  "@slip_field_bank": {
+    "description": "• Bank: {value}",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "slip_confirm_save": "Confirm & Save Transaction",
+  "@slip_confirm_save": {
+    "description": "Confirm & Save Transaction"
   }
 }

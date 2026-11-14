@@ -55,7 +55,6 @@ class _LevelUpDialogState extends State<LevelUpDialog> {
     final surfaceColor = PColor.surface(context);
     final borderColor = PColor.line(context);
     final i18n = AppLocalizations(context).gamification;
-    final currentLang = Localizations.localeOf(context).languageCode;
 
     return Stack(
       alignment: Alignment.center,
@@ -120,9 +119,7 @@ class _LevelUpDialogState extends State<LevelUpDialog> {
                 const SizedBox(height: 8),
 
                 Text(
-                  currentLang == 'th'
-                      ? 'ขอแสดงความยินดี! คุณก้าวสู่เลเวล ${widget.level}'
-                      : 'Congratulations! You reached Level ${widget.level}',
+                  AppLocalizations(context).gamification.level_up_congrats(widget.level),
                   style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w600,
@@ -168,7 +165,7 @@ class _LevelUpDialogState extends State<LevelUpDialog> {
                       elevation: 2,
                     ),
                     child: Text(
-                      currentLang == 'th' ? 'รับพลังและก้าวต่อไป 🚀' : 'Claim & Continue 🚀',
+                      AppLocalizations(context).gamification.claim_and_continue,
                       style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
                     ),
                   ),

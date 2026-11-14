@@ -124,5 +124,123 @@
         "type": "int"
       }
     }
+  },
+  "mark_all_cleared": "ทำเครื่องหมายเคลียร์ทั้งหมด",
+  "@mark_all_cleared": {
+    "description": "Mark All Cleared"
+  },
+  "unmark_all_cleared": "ยกเลิกการเคลียร์ทั้งหมด",
+  "@unmark_all_cleared": {
+    "description": "Unmark All Cleared"
+  },
+  "template_pinned": "ปักหมุด \"{name}\" เป็นแม่แบบด่วนแล้ว ⭐",
+  "@template_pinned": {
+    "description": "Pinned \"{name}\" as a QuickTemplate ⭐",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "enter_amount": "กรุณาระบุจำนวนเงิน",
+  "@enter_amount": {
+    "description": "Please enter an amount"
+  },
+  "income_saved": "บันทึกรายรับสำเร็จ",
+  "@income_saved": {
+    "description": "Income saved"
+  },
+  "expense_saved": "บันทึกรายจ่ายสำเร็จ",
+  "@expense_saved": {
+    "description": "Expense saved"
+  },
+  "quick_name_hint": "ชื่อรายการ (เช่น กาแฟ)",
+  "@quick_name_hint": {
+    "description": "Transaction name"
+  },
+  "pin_template_tooltip": "ปักหมุดเป็นแม่แบบด่วน",
+  "@pin_template_tooltip": {
+    "description": "Pin as QuickTemplate"
+  },
+  "add_note_tooltip": "เพิ่มบันทึกช่วยจำ",
+  "@add_note_tooltip": {
+    "description": "Add Note"
+  },
+  "note_hint_xp": "บันทึกช่วยจำ (+5 XP)",
+  "@note_hint_xp": {
+    "description": "Add note (+5 XP)"
+  },
+  "slip_scan_saved": "สแกนสลิปสำเร็จ! บันทึกรายการ +{xp} XP",
+  "@slip_scan_saved": {
+    "description": "Slip scanned! Transaction saved +{xp} XP",
+    "placeholders": {
+      "xp": {
+        "type": "int"
+      }
+    }
+  },
+  "slip_select_hint": "เลือกรูปสลิปจากอัลบั้ม หรือเลือกเทมเพลตตัวอย่าง",
+  "@slip_select_hint": {
+    "description": "Pick a slip image from your gallery, or choose a sample template"
+  },
+  "slip_supported_banks": "รองรับสลิปทุกธนาคาร (KBank, SCB, BBL, KTB, TrueMoney)",
+  "@slip_supported_banks": {
+    "description": "Supports slips from all banks (KBank, SCB, BBL, KTB, TrueMoney)"
+  },
+  "slip_demo_label": "เลือกสลิปตัวอย่างเพื่อทดสอบสแกน (Demo OCR):",
+  "@slip_demo_label": {
+    "description": "Pick a sample slip to try scanning (Demo OCR):"
+  },
+  "slip_scan_button": "สแกน",
+  "@slip_scan_button": {
+    "description": "Scan"
+  },
+  "slip_analyzing": "กำลังวิเคราะห์ข้อความบนสลิป...",
+  "@slip_analyzing": {
+    "description": "Reading text on the slip..."
+  },
+  "slip_result_title": "ผลการวิเคราะห์ข้อมูลสลิป:",
+  "@slip_result_title": {
+    "description": "Slip analysis result:"
+  },
+  "slip_field_item": "• รายการ: {value}",
+  "@slip_field_item": {
+    "description": "• Item: {value}",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "slip_field_amount": "• จำนวนเงิน: ฿{value}",
+  "@slip_field_amount": {
+    "description": "• Amount: ฿{value}",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "slip_field_category": "• หมวดหมู่: {value}",
+  "@slip_field_category": {
+    "description": "• Category: {value}",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "slip_field_bank": "• ธนาคาร: {value}",
+  "@slip_field_bank": {
+    "description": "• Bank: {value}",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "slip_confirm_save": "ยืนยันและบันทึกรายการ",
+  "@slip_confirm_save": {
+    "description": "Confirm & Save Transaction"
   }
 }

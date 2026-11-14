@@ -57,8 +57,8 @@ class _BudgetPageState extends State<BudgetPage> {
     context.read<BudgetBloc>().add(UpdateAllocationsEvent(updatedAllocs));
 
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('บันทึกแผนการจัดสรรงบประมาณ 50/30/20 สำเร็จ!'),
+      SnackBar(
+        content: Text(AppLocalizations(context).budget.budget_saved_success),
         backgroundColor: PColor.jadeLight,
       ),
     );
@@ -72,7 +72,6 @@ class _BudgetPageState extends State<BudgetPage> {
     final isBalanced = totalPercent == 100;
     final i18n = AppLocalizations(context).budget;
     final generalI18n = AppLocalizations(context).general;
-    final currentLang = Localizations.localeOf(context).languageCode;
 
     return Scaffold(
       backgroundColor: PColor.base(context),
@@ -248,7 +247,7 @@ class _BudgetPageState extends State<BudgetPage> {
 
                   // 3. Bucket Spending Breakdown
                   Text(
-                    currentLang == 'th' ? 'ติดตามการใช้จ่ายจริงเทียบกับงบประมาณ (Bucket Progress):' : 'Bucket Budget Progress:',
+                    AppLocalizations(context).budget.bucket_progress_title,
                     style: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w700,
@@ -263,13 +262,13 @@ class _BudgetPageState extends State<BudgetPage> {
                     String bucketLabel = summary.label;
                     if (summary.id == 'needs') {
                       bucketColor = PColor.primary(context);
-                      bucketLabel = currentLang == 'th' ? 'จำเป็น (Needs)' : 'Needs';
+                      bucketLabel = AppLocalizations(context).budget.bucket_needs;
                     } else if (summary.id == 'wants') {
                       bucketColor = PColor.moss(context);
-                      bucketLabel = currentLang == 'th' ? 'ต้องการ (Wants)' : 'Wants';
+                      bucketLabel = AppLocalizations(context).budget.bucket_wants;
                     } else {
                       bucketColor = PColor.jade(context);
-                      bucketLabel = currentLang == 'th' ? 'เงินออม (Savings)' : 'Savings';
+                      bucketLabel = AppLocalizations(context).budget.bucket_savings;
                     }
 
                     return Container(
@@ -317,7 +316,7 @@ class _BudgetPageState extends State<BudgetPage> {
                                     borderRadius: BorderRadius.circular(6),
                                   ),
                                   child: Text(
-                                    isOverBudget ? i18n.over_budget : (currentLang == 'th' ? 'อยู่ในงบ' : 'On Track'),
+                                    isOverBudget ? i18n.over_budget : AppLocalizations(context).budget.on_track,
                                     style: TextStyle(
                                       fontSize: 11,
                                       fontWeight: FontWeight.w700,

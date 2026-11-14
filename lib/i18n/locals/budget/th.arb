@@ -59,5 +59,29 @@
   "total_must_be_100": "สัดส่วนรวมต้องเท่ากับ 100%",
   "@total_must_be_100": {
     "description": "Validation error message"
+  },
+  "budget_saved_success": "บันทึกแผนการจัดสรรงบประมาณ 50/30/20 สำเร็จ!",
+  "@budget_saved_success": {
+    "description": "50/30/20 budget plan saved!"
+  },
+  "bucket_progress_title": "ติดตามการใช้จ่ายจริงเทียบกับงบประมาณ (Bucket Progress):",
+  "@bucket_progress_title": {
+    "description": "Bucket Budget Progress:"
+  },
+  "bucket_needs": "จำเป็น (Needs)",
+  "@bucket_needs": {
+    "description": "Needs"
+  },
+  "bucket_wants": "ต้องการ (Wants)",
+  "@bucket_wants": {
+    "description": "Wants"
+  },
+  "bucket_savings": "เงินออม (Savings)",
+  "@bucket_savings": {
+    "description": "Savings"
+  },
+  "on_track": "อยู่ในงบ",
+  "@on_track": {
+    "description": "On Track"
   }
 }

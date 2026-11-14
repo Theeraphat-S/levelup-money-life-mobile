@@ -158,4 +158,57 @@ class GeneralLocalizationsEn extends GeneralLocalizations {
   String msg_quest_reward_claimed(int xp) {
     return 'Reward claimed! +$xp XP';
   }
+
+  @override
+  String get settings_title => 'Settings & Profile';
+
+  @override
+  String xp_and_streak(int xp, int days) {
+    return '$xp XP · $days Day Streak';
+  }
+
+  @override
+  String get general_preferences => 'General Preferences';
+
+  @override
+  String get appearance => 'Appearance';
+
+  @override
+  String get backup_and_data => 'Backup & Data Management';
+
+  @override
+  String get backup_and_data_subtitle => 'Export / Import JSON Data';
+
+  @override
+  String get manage => 'Manage';
+
+  @override
+  String get saved_success => 'Saved!';
+
+  @override
+  String get tab_export => 'Export';
+
+  @override
+  String get tab_import => 'Import';
+
+  @override
+  String get tab_reset => 'Reset';
+
+  @override
+  String get export_hint => 'JSON backup (also works with the web app):';
+
+  @override
+  String get copy_json_backup => 'Copy JSON Backup';
+
+  @override
+  String get import_hint => 'Paste JSON exported from the web or mobile app:';
+
+  @override
+  String get import_and_restore => 'Import & Restore';
+
+  @override
+  String get reset_description => 'Transactions, stats and quests will be reset to the default sample data.';
+
+  @override
+  String get reset_confirm_button => 'Confirm Reset All';
 }

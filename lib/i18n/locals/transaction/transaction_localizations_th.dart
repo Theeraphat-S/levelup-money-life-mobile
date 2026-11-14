@@ -99,4 +99,82 @@ class TransactionLocalizationsTh extends TransactionLocalizations {
   String exp_reward_msg(int xp) {
     return 'คุณได้รับ +$xp XP!';
   }
+
+  @override
+  String get mark_all_cleared => 'ทำเครื่องหมายเคลียร์ทั้งหมด';
+
+  @override
+  String get unmark_all_cleared => 'ยกเลิกการเคลียร์ทั้งหมด';
+
+  @override
+  String template_pinned(String name) {
+    return 'ปักหมุด \"$name\" เป็นแม่แบบด่วนแล้ว ⭐';
+  }
+
+  @override
+  String get enter_amount => 'กรุณาระบุจำนวนเงิน';
+
+  @override
+  String get income_saved => 'บันทึกรายรับสำเร็จ';
+
+  @override
+  String get expense_saved => 'บันทึกรายจ่ายสำเร็จ';
+
+  @override
+  String get quick_name_hint => 'ชื่อรายการ (เช่น กาแฟ)';
+
+  @override
+  String get pin_template_tooltip => 'ปักหมุดเป็นแม่แบบด่วน';
+
+  @override
+  String get add_note_tooltip => 'เพิ่มบันทึกช่วยจำ';
+
+  @override
+  String get note_hint_xp => 'บันทึกช่วยจำ (+5 XP)';
+
+  @override
+  String slip_scan_saved(int xp) {
+    return 'สแกนสลิปสำเร็จ! บันทึกรายการ +$xp XP';
+  }
+
+  @override
+  String get slip_select_hint => 'เลือกรูปสลิปจากอัลบั้ม หรือเลือกเทมเพลตตัวอย่าง';
+
+  @override
+  String get slip_supported_banks => 'รองรับสลิปทุกธนาคาร (KBank, SCB, BBL, KTB, TrueMoney)';
+
+  @override
+  String get slip_demo_label => 'เลือกสลิปตัวอย่างเพื่อทดสอบสแกน (Demo OCR):';
+
+  @override
+  String get slip_scan_button => 'สแกน';
+
+  @override
+  String get slip_analyzing => 'กำลังวิเคราะห์ข้อความบนสลิป...';
+
+  @override
+  String get slip_result_title => 'ผลการวิเคราะห์ข้อมูลสลิป:';
+
+  @override
+  String slip_field_item(String value) {
+    return '• รายการ: $value';
+  }
+
+  @override
+  String slip_field_amount(String value) {
+    return '• จำนวนเงิน: ฿$value';
+  }
+
+  @override
+  String slip_field_category(String value) {
+    return '• หมวดหมู่: $value';
+  }
+
+  @override
+  String slip_field_bank(String value) {
+    return '• ธนาคาร: $value';
+  }
+
+  @override
+  String get slip_confirm_save => 'ยืนยันและบันทึกรายการ';
 }

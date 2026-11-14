@@ -99,4 +99,82 @@ class TransactionLocalizationsEn extends TransactionLocalizations {
   String exp_reward_msg(int xp) {
     return 'You earned +$xp XP!';
   }
+
+  @override
+  String get mark_all_cleared => 'Mark All Cleared';
+
+  @override
+  String get unmark_all_cleared => 'Unmark All Cleared';
+
+  @override
+  String template_pinned(String name) {
+    return 'Pinned \"$name\" as a QuickTemplate ⭐';
+  }
+
+  @override
+  String get enter_amount => 'Please enter an amount';
+
+  @override
+  String get income_saved => 'Income saved';
+
+  @override
+  String get expense_saved => 'Expense saved';
+
+  @override
+  String get quick_name_hint => 'Transaction name';
+
+  @override
+  String get pin_template_tooltip => 'Pin as QuickTemplate';
+
+  @override
+  String get add_note_tooltip => 'Add Note';
+
+  @override
+  String get note_hint_xp => 'Add note (+5 XP)';
+
+  @override
+  String slip_scan_saved(int xp) {
+    return 'Slip scanned! Transaction saved +$xp XP';
+  }
+
+  @override
+  String get slip_select_hint => 'Pick a slip image from your gallery, or choose a sample template';
+
+  @override
+  String get slip_supported_banks => 'Supports slips from all banks (KBank, SCB, BBL, KTB, TrueMoney)';
+
+  @override
+  String get slip_demo_label => 'Pick a sample slip to try scanning (Demo OCR):';
+
+  @override
+  String get slip_scan_button => 'Scan';
+
+  @override
+  String get slip_analyzing => 'Reading text on the slip...';
+
+  @override
+  String get slip_result_title => 'Slip analysis result:';
+
+  @override
+  String slip_field_item(String value) {
+    return '• Item: $value';
+  }
+
+  @override
+  String slip_field_amount(String value) {
+    return '• Amount: ฿$value';
+  }
+
+  @override
+  String slip_field_category(String value) {
+    return '• Category: $value';
+  }
+
+  @override
+  String slip_field_bank(String value) {
+    return '• Bank: $value';
+  }
+
+  @override
+  String get slip_confirm_save => 'Confirm & Save Transaction';
 }

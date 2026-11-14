@@ -184,6 +184,42 @@ abstract class BudgetLocalizations {
   /// In en, this message translates to:
   /// **'Total allocation must equal 100%'**
   String get total_must_be_100;
+
+  /// 50/30/20 budget plan saved!
+  ///
+  /// In en, this message translates to:
+  /// **'50/30/20 budget plan saved!'**
+  String get budget_saved_success;
+
+  /// Bucket Budget Progress:
+  ///
+  /// In en, this message translates to:
+  /// **'Bucket Budget Progress:'**
+  String get bucket_progress_title;
+
+  /// Needs
+  ///
+  /// In en, this message translates to:
+  /// **'Needs'**
+  String get bucket_needs;
+
+  /// Wants
+  ///
+  /// In en, this message translates to:
+  /// **'Wants'**
+  String get bucket_wants;
+
+  /// Savings
+  ///
+  /// In en, this message translates to:
+  /// **'Savings'**
+  String get bucket_savings;
+
+  /// On Track
+  ///
+  /// In en, this message translates to:
+  /// **'On Track'**
+  String get on_track;
 }
 
 class _BudgetLocalizationsDelegate extends LocalizationsDelegate<BudgetLocalizations> {

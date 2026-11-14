@@ -29,9 +29,9 @@ class QuestItem {
   String getLocalizedTitle(BuildContext context) {
     final l = AppLocalizations(context).gamification;
     return switch (id) {
-      'q1' => l.quest_q1_title,
-      'q2' => l.quest_q2_title,
-      'q3' => l.quest_q3_title,
+      'q1' => l.quest_q1,
+      'q2' => l.quest_q2,
+      'q3' => l.quest_q3,
       _ => title,
     };
   }

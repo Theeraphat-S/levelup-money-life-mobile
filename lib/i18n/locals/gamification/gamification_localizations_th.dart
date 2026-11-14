@@ -67,11 +67,11 @@ class GamificationLocalizationsTh extends GamificationLocalizations {
   String get quest_q3 => 'โอนเงินเก็บเข้าบัญชีเงินออมสำรองฉุกเฉิน';
 
   @override
-  String get quest_q1_title => 'บันทึกรายจ่ายประจำวันทุกรายการวันนี้';
+  String get quest_status_completed => 'ทำสำเร็จแล้ว ✓';
 
   @override
-  String get quest_q2_title => 'ตรวจสอบสัดส่วนการจัดสรรงบประมาณ 50/30/20';
+  String get quest_status_pending => 'ยังไม่เสร็จสิ้น';
 
   @override
-  String get quest_q3_title => 'โอนเงินเก็บเข้าบัญชีเงินออมสำรองฉุกเฉิน';
+  String get claim_and_continue => 'รับพลังและก้าวต่อไป 🚀';
 }

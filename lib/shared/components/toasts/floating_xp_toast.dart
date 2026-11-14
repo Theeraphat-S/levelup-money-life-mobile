@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:levelup_money_life/i18n/i18n.dart';
 import 'package:levelup_money_life/shared/tokens/p_colors.dart';
 import 'package:toastification/toastification.dart';
 
@@ -64,7 +65,7 @@ void showFloatingXpToast({
                   const SizedBox(width: 10),
                   Flexible(
                     child: Text(
-                      message ?? 'บันทึกสำเร็จ!',
+                      message ?? AppLocalizations(context).general.saved_success,
                       style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w700,

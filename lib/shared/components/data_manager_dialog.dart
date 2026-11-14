@@ -33,7 +33,7 @@ class _DataManagerDialogState extends State<DataManagerDialog>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   final TextEditingController _importController = TextEditingController();
-  String _exportedJson = 'กำลังโหลดข้อมูล...';
+  String _exportedJson = '';
   bool _isLoadingExport = true;
 
   @override
@@ -197,7 +197,7 @@ class _DataManagerDialogState extends State<DataManagerDialog>
                   const SizedBox(width: 10),
                   Expanded(
                     child: Text(
-                      'จัดการข้อมูล (Data Manager)',
+                      AppLocalizations(context).general.data_manager,
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w700,
@@ -222,10 +222,10 @@ class _DataManagerDialogState extends State<DataManagerDialog>
               unselectedLabelColor: PColor.inkSoft(context),
               labelStyle:
                   const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-              tabs: const [
-                Tab(text: 'สำรอง (Export)'),
-                Tab(text: 'กู้คืน (Import)'),
-                Tab(text: 'รีเซ็ต (Reset)'),
+              tabs: [
+                Tab(text: AppLocalizations(context).general.tab_export),
+                Tab(text: AppLocalizations(context).general.tab_import),
+                Tab(text: AppLocalizations(context).general.tab_reset),
               ],
             ),
 
@@ -241,7 +241,7 @@ class _DataManagerDialogState extends State<DataManagerDialog>
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'สำรองข้อมูล JSON (แชร์ใช้งานกับเว็บได้):',
+                          AppLocalizations(context).general.export_hint,
                           style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.w600,
@@ -277,7 +277,7 @@ class _DataManagerDialogState extends State<DataManagerDialog>
                           child: ElevatedButton.icon(
                             onPressed: _isLoadingExport ? null : _copyExportedJson,
                             icon: const Icon(Icons.copy_rounded, size: 16),
-                            label: const Text('คัดลอก JSON Backup'),
+                            label: Text(AppLocalizations(context).general.copy_json_backup),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: PColor.primary(context),
                               foregroundColor:
@@ -299,7 +299,7 @@ class _DataManagerDialogState extends State<DataManagerDialog>
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'วางข้อมูล JSON ที่ Export มาจาก Web หรือ Mobile:',
+                          AppLocalizations(context).general.import_hint,
                           style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.w600,
@@ -334,7 +334,7 @@ class _DataManagerDialogState extends State<DataManagerDialog>
                           child: ElevatedButton.icon(
                             onPressed: _importJson,
                             icon: const Icon(Icons.download_rounded, size: 16),
-                            label: const Text('นำเข้าและกู้คืนข้อมูล'),
+                            label: Text(AppLocalizations(context).general.import_and_restore),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: PColor.primary(context),
                               foregroundColor:
@@ -362,7 +362,7 @@ class _DataManagerDialogState extends State<DataManagerDialog>
                         ),
                         const SizedBox(height: 12),
                         Text(
-                          'คุณต้องการรีเซ็ตข้อมูลทั้งหมดหรือไม่?',
+                          AppLocalizations(context).general.reset_confirm,
                           style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w700,
@@ -372,7 +372,7 @@ class _DataManagerDialogState extends State<DataManagerDialog>
                         ),
                         const SizedBox(height: 6),
                         Text(
-                          'ข้อมูลธุรกรรม สถิติ และเควสจะถูกคืนค่ากลับเป็นชุดตัวอย่างเริ่มต้น',
+                          AppLocalizations(context).general.reset_description,
                           style: TextStyle(
                             fontSize: 12,
                             color: PColor.inkSoft(context),
@@ -391,7 +391,7 @@ class _DataManagerDialogState extends State<DataManagerDialog>
                                 borderRadius: BorderRadius.circular(10),
                               ),
                             ),
-                            child: const Text('ยืนยันการล้างข้อมูล (Reset All)'),
+                            child: Text(AppLocalizations(context).general.reset_confirm_button),
                           ),
                         ),
                       ],

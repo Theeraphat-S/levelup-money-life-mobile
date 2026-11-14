@@ -227,11 +227,11 @@ class _TransactionPageViewState extends State<_TransactionPageView> {
                       itemBuilder: (context) => [
                         PopupMenuItem(
                           value: 'clear_all',
-                          child: Text(currentLang == 'th' ? 'ทำเครื่องหมายเคลียร์ทั้งหมด' : 'Mark All Cleared'),
+                          child: Text(AppLocalizations(context).transaction.mark_all_cleared),
                         ),
                         PopupMenuItem(
                           value: 'unclear_all',
-                          child: Text(currentLang == 'th' ? 'ยกเลิกการเคลียร์ทั้งหมด' : 'Unmark All Cleared'),
+                          child: Text(AppLocalizations(context).transaction.unmark_all_cleared),
                         ),
                       ],
                     ),

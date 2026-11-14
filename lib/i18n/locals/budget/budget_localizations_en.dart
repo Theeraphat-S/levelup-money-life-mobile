@@ -52,4 +52,22 @@ class BudgetLocalizationsEn extends BudgetLocalizations {
 
   @override
   String get total_must_be_100 => 'Total allocation must equal 100%';
+
+  @override
+  String get budget_saved_success => '50/30/20 budget plan saved!';
+
+  @override
+  String get bucket_progress_title => 'Bucket Budget Progress:';
+
+  @override
+  String get bucket_needs => 'Needs';
+
+  @override
+  String get bucket_wants => 'Wants';
+
+  @override
+  String get bucket_savings => 'Savings';
+
+  @override
+  String get on_track => 'On Track';
 }

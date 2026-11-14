@@ -2,6 +2,7 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:levelup_money_life/i18n/i18n.dart';
 import 'package:levelup_money_life/domain/models/transaction/category_item.dart';
 import 'package:levelup_money_life/domain/models/transaction/quick_template.dart';
 import 'package:levelup_money_life/domain/models/transaction/transaction_item.dart';
@@ -139,7 +140,6 @@ class _QuickAddSheetState extends State<QuickAddSheet> {
 
   Future<void> _pinCurrentAsTemplate() async {
     final currentLang = Localizations.localeOf(context).languageCode;
-    final isThai = currentLang == 'th';
     final name = _name.trim().isNotEmpty
         ? _name.trim()
         : CategoryItem.getLocalizedCategoryName(_selectedCategory, currentLang);
@@ -162,9 +162,7 @@ class _QuickAddSheetState extends State<QuickAddSheet> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            isThai
-                ? 'ปักหมุด "$name" เป็นแม่แบบด่วนแล้ว ⭐'
-                : 'Pinned "$name" as QuickTemplate ⭐',
+            AppLocalizations(context).transaction.template_pinned(name),
           ),
           duration: const Duration(seconds: 2),
         ),
@@ -176,9 +174,9 @@ class _QuickAddSheetState extends State<QuickAddSheet> {
     final amountVal = SmartNumpad.parseEvaluatedAmount(_amountInput);
     if (amountVal <= 0) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('กรุณาระบุจำนวนเงิน'),
-          duration: Duration(seconds: 2),
+        SnackBar(
+          content: Text(AppLocalizations(context).transaction.enter_amount),
+          duration: const Duration(seconds: 2),
         ),
       );
       return;
@@ -221,7 +219,7 @@ class _QuickAddSheetState extends State<QuickAddSheet> {
     showFloatingXpToast(
       context: context,
       xpGained: _calculatedXpReward,
-      message: _isIncome ? 'บันทึกรายรับสำเร็จ' : 'บันทึกรายจ่ายสำเร็จ',
+      message: _isIncome ? AppLocalizations(context).transaction.income_saved : AppLocalizations(context).transaction.expense_saved,
     );
   }
 
@@ -231,7 +229,6 @@ class _QuickAddSheetState extends State<QuickAddSheet> {
     final surfaceColor = PColor.surface(context);
     final borderColor = PColor.line(context);
     final currentLang = Localizations.localeOf(context).languageCode;
-    final isThai = currentLang == 'th';
 
     final categories = CategoryItem.defaultCategories
         .where((c) => _isIncome ? c.isIncome : !c.isIncome)
@@ -281,7 +278,7 @@ class _QuickAddSheetState extends State<QuickAddSheet> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       _buildTypeButton(
-                        label: isThai ? 'รายจ่าย' : 'Expense',
+                        label: AppLocalizations(context).transaction.filter_expense,
                         isSelected: !_isIncome,
                         activeColor: PColor.rose(context),
                         onTap: () {
@@ -293,7 +290,7 @@ class _QuickAddSheetState extends State<QuickAddSheet> {
                         },
                       ),
                       _buildTypeButton(
-                        label: isThai ? 'รายรับ' : 'Income',
+                        label: AppLocalizations(context).transaction.filter_income,
                         isSelected: _isIncome,
                         activeColor: PColor.jade(context),
                         onTap: () {
@@ -427,7 +424,7 @@ class _QuickAddSheetState extends State<QuickAddSheet> {
                                 color: PColor.ink(context),
                               ),
                               decoration: InputDecoration(
-                                hintText: isThai ? 'ชื่อรายการ (เช่น กาแฟ)' : 'Transaction name',
+                                hintText: AppLocalizations(context).transaction.quick_name_hint,
                                 isDense: true,
                                 contentPadding: EdgeInsets.zero,
                                 border: InputBorder.none,
@@ -471,7 +468,7 @@ class _QuickAddSheetState extends State<QuickAddSheet> {
 
                     // Pin as QuickTemplate Action Button
                     Tooltip(
-                      message: isThai ? 'ปักหมุดเป็นแม่แบบด่วน' : 'Pin as QuickTemplate',
+                      message: AppLocalizations(context).transaction.pin_template_tooltip,
                       child: InkWell(
                         onTap: _pinCurrentAsTemplate,
                         borderRadius: BorderRadius.circular(6),
@@ -489,7 +486,7 @@ class _QuickAddSheetState extends State<QuickAddSheet> {
 
                     // Note Input Toggle Button
                     Tooltip(
-                      message: isThai ? 'เพิ่มบันทึกช่วยจำ' : 'Add Note',
+                      message: AppLocalizations(context).transaction.add_note_tooltip,
                       child: InkWell(
                         onTap: () {
                           setState(() {
@@ -548,7 +545,7 @@ class _QuickAddSheetState extends State<QuickAddSheet> {
                             controller: _notesController,
                             style: TextStyle(fontSize: 12, color: PColor.ink(context)),
                             decoration: InputDecoration(
-                              hintText: isThai ? 'บันทึกช่วยจำ (+5 XP)' : 'Add note (+5 XP)',
+                              hintText: AppLocalizations(context).transaction.note_hint_xp,
                               hintStyle: TextStyle(fontSize: 11, color: PColor.inkFaint(context)),
                               isDense: true,
                               contentPadding: EdgeInsets.zero,

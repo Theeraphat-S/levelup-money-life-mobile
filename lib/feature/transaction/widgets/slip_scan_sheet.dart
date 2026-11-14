@@ -1,6 +1,8 @@
 ﻿import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:levelup_money_life/domain/services/gamification_engine.dart';
+import 'package:levelup_money_life/i18n/i18n.dart';
 import 'package:levelup_money_life/domain/models/transaction/transaction_item.dart';
 import 'package:levelup_money_life/feature/dashboard/bloc/dashboard_bloc.dart';
 import 'package:levelup_money_life/feature/dashboard/bloc/dashboard_event.dart';
@@ -93,6 +95,14 @@ class _SlipScanSheetState extends State<SlipScanSheet> {
     }
   }
 
+  static const _slipBonusXp = 25;
+
+  /// XP the bloc awards for a scanned slip: base expense XP, the notes
+  /// bonus (scans always carry a note) and the scan bonus.
+  int get _slipXp =>
+      GamificationEngine.calculateTransactionXp(isIncome: false, hasNotes: true) +
+      _slipBonusXp;
+
   void _confirmAndSave() {
     if (_detectedSlip == null) return;
 
@@ -110,23 +120,26 @@ class _SlipScanSheetState extends State<SlipScanSheet> {
     // Award +25 XP bonus for scanning bank slip
     context
         .read<TransactionBloc>()
-        .add(AddTransactionItemEvent(tx, bonusExp: 25));
+        .add(AddTransactionItemEvent(tx, bonusExp: _slipBonusXp));
     context.read<DashboardBloc>().add(const LoadDashboardData());
     context.read<GamificationBloc>().add(const LoadGamificationDataEvent());
 
+    // Resolve the text before popping this sheet's route.
+    final savedText =
+        AppLocalizations(context).transaction.slip_scan_saved(_slipXp);
     Navigator.of(context).pop();
 
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
+      SnackBar(
         content: Row(
           children: [
-            Icon(Icons.check_circle_rounded, color: Colors.white, size: 18),
-            SizedBox(width: 8),
-            Text('สแกนสลิปสำเร็จ! บันทึกรายการ +40 XP'),
+            const Icon(Icons.check_circle_rounded, color: Colors.white, size: 18),
+            const SizedBox(width: 8),
+            Text(savedText),
           ],
         ),
         backgroundColor: PColor.jadeLight,
-        duration: Duration(seconds: 3),
+        duration: const Duration(seconds: 3),
       ),
     );
   }
@@ -187,7 +200,7 @@ class _SlipScanSheetState extends State<SlipScanSheet> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'สแกนสลิปโอนเงิน (OCR)',
+                          AppLocalizations(context).transaction.scan_slip_title,
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w700,
@@ -195,7 +208,7 @@ class _SlipScanSheetState extends State<SlipScanSheet> {
                           ),
                         ),
                         Text(
-                          'ดึงยอดเงิน วันที่ และหมวดหมู่อัตโนมัติ (+25 XP Bonus)',
+                          AppLocalizations(context).transaction.scan_slip_subtitle,
                           style: TextStyle(
                             fontSize: 11,
                             color: PColor.jadeInk(context),
@@ -231,7 +244,7 @@ class _SlipScanSheetState extends State<SlipScanSheet> {
                     ),
                     const SizedBox(height: 10),
                     Text(
-                      'เลือกรูปสลิปจากอัลบั้ม หรือเลือกเทมเพลตตัวอย่าง',
+                      AppLocalizations(context).transaction.slip_select_hint,
                       style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w600,
@@ -240,7 +253,7 @@ class _SlipScanSheetState extends State<SlipScanSheet> {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      'รองรับสลิปทุกธนาคาร (KBank, SCB, BBL, KTB, TrueMoney)',
+                      AppLocalizations(context).transaction.slip_supported_banks,
                       style: TextStyle(
                         fontSize: 11,
                         color: PColor.inkFaint(context),
@@ -252,7 +265,7 @@ class _SlipScanSheetState extends State<SlipScanSheet> {
               const SizedBox(height: 16),
 
               Text(
-                'เลือกสลิปตัวอย่างเพื่อทดสอบสแกน (Demo OCR):',
+                AppLocalizations(context).transaction.slip_demo_label,
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w700,
@@ -327,8 +340,8 @@ class _SlipScanSheetState extends State<SlipScanSheet> {
                           side: BorderSide(color: PColor.line(context)),
                         ),
                       ),
-                      child: const Text('สแกน',
-                          style: TextStyle(
+                      child: Text(AppLocalizations(context).transaction.slip_scan_button,
+                          style: const TextStyle(
                               fontSize: 11, fontWeight: FontWeight.bold)),
                     ),
                   ),
@@ -343,7 +356,7 @@ class _SlipScanSheetState extends State<SlipScanSheet> {
                       CircularProgressIndicator(color: PColor.primary(context)),
                       const SizedBox(height: 8),
                       Text(
-                        'กำลังวิเคราะห์ข้อความบนสลิป...',
+                        AppLocalizations(context).transaction.slip_analyzing,
                         style: TextStyle(fontSize: 12, color: PColor.inkSoft(context)),
                       ),
                     ],
@@ -371,7 +384,7 @@ class _SlipScanSheetState extends State<SlipScanSheet> {
                               color: PColor.jade(context), size: 18),
                           const SizedBox(width: 6),
                           Text(
-                            'ผลการวิเคราะห์ข้อมูลสลิป:',
+                            AppLocalizations(context).transaction.slip_result_title,
                             style: TextStyle(
                               fontSize: 13,
                               fontWeight: FontWeight.w700,
@@ -381,17 +394,17 @@ class _SlipScanSheetState extends State<SlipScanSheet> {
                         ],
                       ),
                       const SizedBox(height: 8),
-                      Text('• รายการ: ${_detectedSlip!.title}',
+                      Text(AppLocalizations(context).transaction.slip_field_item(_detectedSlip!.title),
                           style: TextStyle(fontSize: 12, color: PColor.ink(context))),
-                      Text('• จำนวนเงิน: ฿${_detectedSlip!.amount.toStringAsFixed(2)}',
+                      Text(AppLocalizations(context).transaction.slip_field_amount(_detectedSlip!.amount.toStringAsFixed(2)),
                           style: TextStyle(
                               fontSize: 12,
                               fontFamily: 'monospace',
                               fontWeight: FontWeight.w700,
                               color: PColor.roseInk(context))),
-                      Text('• หมวดหมู่: ${_detectedSlip!.category}',
+                      Text(AppLocalizations(context).transaction.slip_field_category(_detectedSlip!.category),
                           style: TextStyle(fontSize: 12, color: PColor.ink(context))),
-                      Text('• ธนาคาร: ${_detectedSlip!.bankName}',
+                      Text(AppLocalizations(context).transaction.slip_field_bank(_detectedSlip!.bankName),
                           style: TextStyle(fontSize: 12, color: PColor.inkSoft(context))),
                     ],
                   ),
@@ -415,9 +428,9 @@ class _SlipScanSheetState extends State<SlipScanSheet> {
                       children: [
                         const Icon(Icons.save_outlined, size: 18),
                         const SizedBox(width: 8),
-                        const Text(
-                          'ยืนยันและบันทึกรายการ',
-                          style: TextStyle(fontWeight: FontWeight.w700, fontSize: 14),
+                        Text(
+                          AppLocalizations(context).transaction.slip_confirm_save,
+                          style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 14),
                         ),
                         const SizedBox(width: 8),
                         Container(
