@@ -89,32 +89,55 @@ class _DataManagerDialogState extends State<DataManagerDialog>
       }
 
       final db = locator<AppDatabase>();
-      final success = await db.importBackupJson(map);
+      final result = await db.importBackupJson(map);
+      if (!mounted) return;
 
-      if (success && mounted) {
-        context.read<AppGlobalBloc>().add(const InitializeAppEvent());
-        context.read<DashboardBloc>().add(const LoadDashboardData());
-        context.read<TransactionBloc>().add(const LoadTransactionsEvent());
-        context.read<BudgetBloc>().add(const LoadBudgetDataEvent());
-        context.read<GamificationBloc>().add(const LoadGamificationDataEvent());
-
-        Navigator.of(context).pop();
+      if (!result.success) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-              content: Text(AppLocalizations(context)
-                  .general
-                  .data_restored_success)),
+          SnackBar(content: Text(_importErrorText(result))),
         );
+        return;
       }
-    } catch (e) {
+
+      context.read<AppGlobalBloc>().add(const InitializeAppEvent());
+      context.read<DashboardBloc>().add(const LoadDashboardData());
+      context.read<TransactionBloc>().add(const LoadTransactionsEvent());
+      context.read<BudgetBloc>().add(const LoadBudgetDataEvent());
+      context.read<GamificationBloc>().add(const LoadGamificationDataEvent());
+
+      Navigator.of(context).pop();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+            content:
+                Text(AppLocalizations(context).general.data_restored_success)),
+      );
+    } on FormatException {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-              content: Text(
-                  '${AppLocalizations(context).general.data_restore_failed}: $e')),
+              content:
+                  Text(AppLocalizations(context).general.data_restore_failed)),
         );
       }
     }
+  }
+
+  String _importErrorText(BackupImportResult result) {
+    final l = AppLocalizations(context).general;
+    final detail = result.detail ?? '';
+    return switch (result.error!) {
+      BackupImportError.unsupportedVersion => l.backup_error_unsupported_version,
+      BackupImportError.invalidTransactions =>
+        l.backup_error_invalid_transactions(detail),
+      BackupImportError.invalidAllocations =>
+        l.backup_error_invalid_allocations(detail),
+      BackupImportError.invalidQuests => l.backup_error_invalid_quests(detail),
+      BackupImportError.invalidGamification =>
+        l.backup_error_invalid_gamification(detail),
+      BackupImportError.invalidSettings =>
+        l.backup_error_invalid_settings(detail),
+      BackupImportError.databaseError => l.backup_error_database,
+    };
   }
 
   void _resetData() async {

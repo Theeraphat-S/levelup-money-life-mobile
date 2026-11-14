@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:levelup_money_life/shared/models/app_message.dart';
 import 'package:levelup_money_life/domain/models/transaction/transaction_item.dart';
 import 'package:levelup_money_life/domain/repositories/gamification_repository.dart';
 import 'package:levelup_money_life/domain/repositories/transaction_repository.dart';
@@ -56,16 +57,22 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
             monthFilter: month,
           );
         },
-        onError: (e, stack) => state.copyWith(
+        onError: (e, stack) {
+          addError(e, stack);
+          return state.copyWith(
+            status: TransactionStatus.failure,
+            errorMessage: const AppMessage(AppMessageCode.loadFailed),
+          );
+        },
+      );
+    } catch (e, st) {
+      addError(e, st);
+      emit(
+        state.copyWith(
           status: TransactionStatus.failure,
-          errorMessage: 'เกิดข้อผิดพลาดในการโหลดรายการ: $e',
+          errorMessage: const AppMessage(AppMessageCode.loadFailed),
         ),
       );
-    } catch (e) {
-      emit(state.copyWith(
-        status: TransactionStatus.failure,
-        errorMessage: 'เกิดข้อผิดพลาดในการโหลดรายการ: $e',
-      ));
     }
   }
 
@@ -75,10 +82,9 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   ) async {
     try {
       final tx = event.transaction;
-      await transactionRepository.createTransaction(tx);
 
       // Calculate EXP to award using central GamificationEngine
-      int expAwarded = GamificationEngine.calculateTransactionXp(
+      var expAwarded = GamificationEngine.calculateTransactionXp(
         isIncome: tx.isIncome,
         hasNotes: tx.notes != null && tx.notes!.trim().isNotEmpty,
       );
@@ -86,12 +92,19 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         expAwarded += event.bonusExp; // slip scan bonus
       }
 
+      // Persist the XP actually awarded so a delete can take back exactly it.
+      await transactionRepository.createTransaction(
+        tx.copyWith(expGained: expAwarded),
+      );
       await userRepository.addExp(expAwarded);
       await gamificationRepository.evaluateAchievements();
-    } catch (e) {
-      emit(state.copyWith(
-        errorMessage: 'ไม่สามารถบันทึกรายการได้: $e',
-      ));
+    } catch (e, st) {
+      addError(e, st);
+      emit(
+        state.copyWith(
+          errorMessage: const AppMessage(AppMessageCode.saveFailed),
+        ),
+      );
     }
   }
 
@@ -102,8 +115,13 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     try {
       await transactionRepository.updateTransaction(event.transaction);
       await gamificationRepository.evaluateAchievements();
-    } catch (e) {
-      emit(state.copyWith(errorMessage: 'ไม่สามารถแก้ไขรายการได้: $e'));
+    } catch (e, st) {
+      addError(e, st);
+      emit(
+        state.copyWith(
+          errorMessage: const AppMessage(AppMessageCode.updateFailed),
+        ),
+      );
     }
   }
 
@@ -112,9 +130,16 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     Emitter<TransactionState> emit,
   ) async {
     try {
+      // The repository also reverses the transaction's XP atomically.
       await transactionRepository.deleteTransaction(event.id);
-    } catch (e) {
-      emit(state.copyWith(errorMessage: 'ไม่สามารถลบรายการได้: $e'));
+      await gamificationRepository.evaluateAchievements();
+    } catch (e, st) {
+      addError(e, st);
+      emit(
+        state.copyWith(
+          errorMessage: const AppMessage(AppMessageCode.deleteFailed),
+        ),
+      );
     }
   }
 
@@ -125,8 +150,13 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     try {
       await transactionRepository.toggleCleared(event.id);
       await gamificationRepository.evaluateAchievements();
-    } catch (e) {
-      emit(state.copyWith(errorMessage: 'เกิดข้อผิดพลาด: $e'));
+    } catch (e, st) {
+      addError(e, st);
+      emit(
+        state.copyWith(
+          errorMessage: const AppMessage(AppMessageCode.genericError),
+        ),
+      );
     }
   }
 
@@ -136,10 +166,17 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   ) async {
     try {
       await transactionRepository.bulkToggleCleared(
-          cleared: event.cleared, monthFilter: state.monthFilter);
+        cleared: event.cleared,
+        monthFilter: state.monthFilter,
+      );
       await gamificationRepository.evaluateAchievements();
-    } catch (e) {
-      emit(state.copyWith(errorMessage: 'เกิดข้อผิดพลาด: $e'));
+    } catch (e, st) {
+      addError(e, st);
+      emit(
+        state.copyWith(
+          errorMessage: const AppMessage(AppMessageCode.genericError),
+        ),
+      );
     }
   }
 
@@ -166,16 +203,18 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       sortAscending: newSortAscending,
     );
 
-    emit(state.copyWith(
-      filteredTransactions: filtered,
-      categoryFilter: newCategory,
-      clearedFilter: newCleared,
-      clearCategoryFilter: event.clearCategory,
-      clearClearedFilter: event.clearCleared,
-      searchQuery: newSearch,
-      sortField: newSortField,
-      sortAscending: newSortAscending,
-    ));
+    emit(
+      state.copyWith(
+        filteredTransactions: filtered,
+        categoryFilter: newCategory,
+        clearedFilter: newCleared,
+        clearCategoryFilter: event.clearCategory,
+        clearClearedFilter: event.clearCleared,
+        searchQuery: newSearch,
+        sortField: newSortField,
+        sortAscending: newSortAscending,
+      ),
+    );
   }
 
   List<TransactionItem> _applyFiltersAndSort(
@@ -190,8 +229,9 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
 
     if (categoryFilter != null && categoryFilter.isNotEmpty) {
       result = result
-          .where((t) =>
-              t.category.toLowerCase() == categoryFilter.toLowerCase())
+          .where(
+            (t) => t.category.toLowerCase() == categoryFilter.toLowerCase(),
+          )
           .toList();
     }
 
@@ -214,6 +254,11 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       switch (sortField) {
         case TransactionSortField.date:
           cmp = a.date.compareTo(b.date);
+          if (cmp == 0) {
+            final aAt = a.createdAt?.millisecondsSinceEpoch ?? 0;
+            final bAt = b.createdAt?.millisecondsSinceEpoch ?? 0;
+            cmp = aAt.compareTo(bAt);
+          }
           break;
         case TransactionSortField.amount:
           cmp = a.amount.compareTo(b.amount);

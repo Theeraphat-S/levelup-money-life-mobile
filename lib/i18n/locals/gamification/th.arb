@@ -94,5 +94,17 @@
   "quest_q3": "โอนเงินเก็บเข้าบัญชีเงินออมสำรองฉุกเฉิน",
   "@quest_q3": {
     "description": "Default quest 3"
+  },
+  "quest_q1_title": "บันทึกรายจ่ายประจำวันทุกรายการวันนี้",
+  "@quest_q1_title": {
+    "description": "Default daily quest q1"
+  },
+  "quest_q2_title": "ตรวจสอบสัดส่วนการจัดสรรงบประมาณ 50/30/20",
+  "@quest_q2_title": {
+    "description": "Default daily quest q2"
+  },
+  "quest_q3_title": "โอนเงินเก็บเข้าบัญชีเงินออมสำรองฉุกเฉิน",
+  "@quest_q3_title": {
+    "description": "Default daily quest q3"
   }
 }

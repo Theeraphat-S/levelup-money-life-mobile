@@ -1,4 +1,5 @@
-﻿import 'package:equatable/equatable.dart';
+import 'package:equatable/equatable.dart';
+import 'package:levelup_money_life/shared/models/app_message.dart';
 import 'package:levelup_money_life/domain/models/transaction/category_item.dart';
 import 'package:levelup_money_life/domain/models/transaction/transaction_item.dart';
 
@@ -17,7 +18,7 @@ class TransactionState extends Equatable {
   final TransactionSortField sortField;
   final bool sortAscending;
   final int lastExpAwarded;
-  final String? errorMessage;
+  final AppMessage? errorMessage;
 
   const TransactionState({
     this.status = TransactionStatus.initial,
@@ -48,7 +49,7 @@ class TransactionState extends Equatable {
     TransactionSortField? sortField,
     bool? sortAscending,
     int? lastExpAwarded,
-    String? errorMessage,
+    AppMessage? errorMessage,
   }) {
     return TransactionState(
       status: status ?? this.status,

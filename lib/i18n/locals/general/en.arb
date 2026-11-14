@@ -99,5 +99,125 @@
   "copied_to_clipboard": "Copied to clipboard",
   "@copied_to_clipboard": {
     "description": "Copied to clipboard"
+  },
+  "backup_error_unsupported_version": "This backup was made by a newer app version and can't be restored.",
+  "@backup_error_unsupported_version": {
+    "description": "Backup version is not supported"
+  },
+  "backup_error_invalid_transactions": "Backup has an invalid transaction ({detail}). Nothing was changed.",
+  "@backup_error_invalid_transactions": {
+    "description": "Invalid transaction in backup",
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "backup_error_invalid_allocations": "Backup has an invalid budget allocation ({detail}). Nothing was changed.",
+  "@backup_error_invalid_allocations": {
+    "description": "Invalid allocation in backup",
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "backup_error_invalid_quests": "Backup has an invalid quest ({detail}). Nothing was changed.",
+  "@backup_error_invalid_quests": {
+    "description": "Invalid quest in backup",
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "backup_error_invalid_gamification": "Backup has invalid XP / streak data ({detail}). Nothing was changed.",
+  "@backup_error_invalid_gamification": {
+    "description": "Invalid gamification data in backup",
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "backup_error_invalid_settings": "Backup has an invalid setting ({detail}). Nothing was changed.",
+  "@backup_error_invalid_settings": {
+    "description": "Invalid setting in backup",
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "backup_error_database": "Couldn't write the backup to the database. Your existing data was not changed.",
+  "@backup_error_database": {
+    "description": "Database error while restoring"
+  },
+  "msg_load_failed": "Couldn't load data. Please try again.",
+  "@msg_load_failed": {
+    "description": "Generic load failure"
+  },
+  "msg_save_failed": "Couldn't save the transaction.",
+  "@msg_save_failed": {
+    "description": "Transaction save failure"
+  },
+  "msg_update_failed": "Couldn't update the transaction.",
+  "@msg_update_failed": {
+    "description": "Transaction update failure"
+  },
+  "msg_delete_failed": "Couldn't delete the transaction.",
+  "@msg_delete_failed": {
+    "description": "Transaction delete failure"
+  },
+  "msg_generic_error": "Something went wrong. Please try again.",
+  "@msg_generic_error": {
+    "description": "Generic error"
+  },
+  "msg_budget_save_failed": "Couldn't save the budget allocation.",
+  "@msg_budget_save_failed": {
+    "description": "Budget allocation save failure"
+  },
+  "msg_income_save_failed": "Couldn't save your monthly income.",
+  "@msg_income_save_failed": {
+    "description": "Monthly income save failure"
+  },
+  "msg_checkin_failed": "Daily check-in failed.",
+  "@msg_checkin_failed": {
+    "description": "Check-in failure"
+  },
+  "msg_reward_claim_failed": "Couldn't claim the reward.",
+  "@msg_reward_claim_failed": {
+    "description": "Reward claim failure"
+  },
+  "msg_checkin_success": "Checked in! +{xp} XP",
+  "@msg_checkin_success": {
+    "description": "Daily check-in success",
+    "placeholders": {
+      "xp": {
+        "type": "int"
+      }
+    }
+  },
+  "msg_quest_completed": "Quest complete! +{xp} XP",
+  "@msg_quest_completed": {
+    "description": "Quest completed",
+    "placeholders": {
+      "xp": {
+        "type": "int"
+      }
+    }
+  },
+  "msg_quest_reverted": "Quest marked as not done.",
+  "@msg_quest_reverted": {
+    "description": "Quest un-completed"
+  },
+  "msg_quest_reward_claimed": "Reward claimed! +{xp} XP",
+  "@msg_quest_reward_claimed": {
+    "description": "Quest reward claimed",
+    "placeholders": {
+      "xp": {
+        "type": "int"
+      }
+    }
   }
 }

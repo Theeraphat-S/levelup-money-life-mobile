@@ -27,13 +27,15 @@ class $TransactionsTable extends Transactions
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _amountMeta = const VerificationMeta('amount');
+  static const VerificationMeta _amountSatangMeta = const VerificationMeta(
+    'amountSatang',
+  );
   @override
-  late final GeneratedColumn<double> amount = GeneratedColumn<double>(
-    'amount',
+  late final GeneratedColumn<int> amountSatang = GeneratedColumn<int>(
+    'amount_satang',
     aliasedName,
     false,
-    type: DriftSqlType.double,
+    type: DriftSqlType.int,
     requiredDuringInsert: true,
   );
   static const VerificationMeta _dateMeta = const VerificationMeta('date');
@@ -107,7 +109,7 @@ class $TransactionsTable extends Transactions
   List<GeneratedColumn> get $columns => [
     id,
     name,
-    amount,
+    amountSatang,
     date,
     category,
     cleared,
@@ -140,13 +142,16 @@ class $TransactionsTable extends Transactions
     } else if (isInserting) {
       context.missing(_nameMeta);
     }
-    if (data.containsKey('amount')) {
+    if (data.containsKey('amount_satang')) {
       context.handle(
-        _amountMeta,
-        amount.isAcceptableOrUnknown(data['amount']!, _amountMeta),
+        _amountSatangMeta,
+        amountSatang.isAcceptableOrUnknown(
+          data['amount_satang']!,
+          _amountSatangMeta,
+        ),
       );
     } else if (isInserting) {
-      context.missing(_amountMeta);
+      context.missing(_amountSatangMeta);
     }
     if (data.containsKey('date')) {
       context.handle(
@@ -207,10 +212,10 @@ class $TransactionsTable extends Transactions
             DriftSqlType.string,
             data['${effectivePrefix}name'],
           )!,
-      amount:
+      amountSatang:
           attachedDatabase.typeMapping.read(
-            DriftSqlType.double,
-            data['${effectivePrefix}amount'],
+            DriftSqlType.int,
+            data['${effectivePrefix}amount_satang'],
           )!,
       date:
           attachedDatabase.typeMapping.read(
@@ -252,7 +257,10 @@ class $TransactionsTable extends Transactions
 class TransactionData extends DataClass implements Insertable<TransactionData> {
   final String id;
   final String name;
-  final double amount;
+
+  /// Signed amount in integer satang (1 baht = 100). Stored as an integer so
+  /// totals never pick up floating-point drift. Was REAL `amount` before v4.
+  final int amountSatang;
   final String date;
   final String category;
   final bool cleared;
@@ -262,7 +270,7 @@ class TransactionData extends DataClass implements Insertable<TransactionData> {
   const TransactionData({
     required this.id,
     required this.name,
-    required this.amount,
+    required this.amountSatang,
     required this.date,
     required this.category,
     required this.cleared,
@@ -275,7 +283,7 @@ class TransactionData extends DataClass implements Insertable<TransactionData> {
     final map = <String, Expression>{};
     map['id'] = Variable<String>(id);
     map['name'] = Variable<String>(name);
-    map['amount'] = Variable<double>(amount);
+    map['amount_satang'] = Variable<int>(amountSatang);
     map['date'] = Variable<String>(date);
     map['category'] = Variable<String>(category);
     map['cleared'] = Variable<bool>(cleared);
@@ -293,7 +301,7 @@ class TransactionData extends DataClass implements Insertable<TransactionData> {
     return TransactionsCompanion(
       id: Value(id),
       name: Value(name),
-      amount: Value(amount),
+      amountSatang: Value(amountSatang),
       date: Value(date),
       category: Value(category),
       cleared: Value(cleared),
@@ -315,7 +323,7 @@ class TransactionData extends DataClass implements Insertable<TransactionData> {
     return TransactionData(
       id: serializer.fromJson<String>(json['id']),
       name: serializer.fromJson<String>(json['name']),
-      amount: serializer.fromJson<double>(json['amount']),
+      amountSatang: serializer.fromJson<int>(json['amountSatang']),
       date: serializer.fromJson<String>(json['date']),
       category: serializer.fromJson<String>(json['category']),
       cleared: serializer.fromJson<bool>(json['cleared']),
@@ -330,7 +338,7 @@ class TransactionData extends DataClass implements Insertable<TransactionData> {
     return <String, dynamic>{
       'id': serializer.toJson<String>(id),
       'name': serializer.toJson<String>(name),
-      'amount': serializer.toJson<double>(amount),
+      'amountSatang': serializer.toJson<int>(amountSatang),
       'date': serializer.toJson<String>(date),
       'category': serializer.toJson<String>(category),
       'cleared': serializer.toJson<bool>(cleared),
@@ -343,7 +351,7 @@ class TransactionData extends DataClass implements Insertable<TransactionData> {
   TransactionData copyWith({
     String? id,
     String? name,
-    double? amount,
+    int? amountSatang,
     String? date,
     String? category,
     bool? cleared,
@@ -353,7 +361,7 @@ class TransactionData extends DataClass implements Insertable<TransactionData> {
   }) => TransactionData(
     id: id ?? this.id,
     name: name ?? this.name,
-    amount: amount ?? this.amount,
+    amountSatang: amountSatang ?? this.amountSatang,
     date: date ?? this.date,
     category: category ?? this.category,
     cleared: cleared ?? this.cleared,
@@ -365,7 +373,10 @@ class TransactionData extends DataClass implements Insertable<TransactionData> {
     return TransactionData(
       id: data.id.present ? data.id.value : this.id,
       name: data.name.present ? data.name.value : this.name,
-      amount: data.amount.present ? data.amount.value : this.amount,
+      amountSatang:
+          data.amountSatang.present
+              ? data.amountSatang.value
+              : this.amountSatang,
       date: data.date.present ? data.date.value : this.date,
       category: data.category.present ? data.category.value : this.category,
       cleared: data.cleared.present ? data.cleared.value : this.cleared,
@@ -380,7 +391,7 @@ class TransactionData extends DataClass implements Insertable<TransactionData> {
     return (StringBuffer('TransactionData(')
           ..write('id: $id, ')
           ..write('name: $name, ')
-          ..write('amount: $amount, ')
+          ..write('amountSatang: $amountSatang, ')
           ..write('date: $date, ')
           ..write('category: $category, ')
           ..write('cleared: $cleared, ')
@@ -395,7 +406,7 @@ class TransactionData extends DataClass implements Insertable<TransactionData> {
   int get hashCode => Object.hash(
     id,
     name,
-    amount,
+    amountSatang,
     date,
     category,
     cleared,
@@ -409,7 +420,7 @@ class TransactionData extends DataClass implements Insertable<TransactionData> {
       (other is TransactionData &&
           other.id == this.id &&
           other.name == this.name &&
-          other.amount == this.amount &&
+          other.amountSatang == this.amountSatang &&
           other.date == this.date &&
           other.category == this.category &&
           other.cleared == this.cleared &&
@@ -421,7 +432,7 @@ class TransactionData extends DataClass implements Insertable<TransactionData> {
 class TransactionsCompanion extends UpdateCompanion<TransactionData> {
   final Value<String> id;
   final Value<String> name;
-  final Value<double> amount;
+  final Value<int> amountSatang;
   final Value<String> date;
   final Value<String> category;
   final Value<bool> cleared;
@@ -432,7 +443,7 @@ class TransactionsCompanion extends UpdateCompanion<TransactionData> {
   const TransactionsCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
-    this.amount = const Value.absent(),
+    this.amountSatang = const Value.absent(),
     this.date = const Value.absent(),
     this.category = const Value.absent(),
     this.cleared = const Value.absent(),
@@ -444,7 +455,7 @@ class TransactionsCompanion extends UpdateCompanion<TransactionData> {
   TransactionsCompanion.insert({
     required String id,
     required String name,
-    required double amount,
+    required int amountSatang,
     required String date,
     required String category,
     this.cleared = const Value.absent(),
@@ -454,13 +465,13 @@ class TransactionsCompanion extends UpdateCompanion<TransactionData> {
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        name = Value(name),
-       amount = Value(amount),
+       amountSatang = Value(amountSatang),
        date = Value(date),
        category = Value(category);
   static Insertable<TransactionData> custom({
     Expression<String>? id,
     Expression<String>? name,
-    Expression<double>? amount,
+    Expression<int>? amountSatang,
     Expression<String>? date,
     Expression<String>? category,
     Expression<bool>? cleared,
@@ -472,7 +483,7 @@ class TransactionsCompanion extends UpdateCompanion<TransactionData> {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (name != null) 'name': name,
-      if (amount != null) 'amount': amount,
+      if (amountSatang != null) 'amount_satang': amountSatang,
       if (date != null) 'date': date,
       if (category != null) 'category': category,
       if (cleared != null) 'cleared': cleared,
@@ -486,7 +497,7 @@ class TransactionsCompanion extends UpdateCompanion<TransactionData> {
   TransactionsCompanion copyWith({
     Value<String>? id,
     Value<String>? name,
-    Value<double>? amount,
+    Value<int>? amountSatang,
     Value<String>? date,
     Value<String>? category,
     Value<bool>? cleared,
@@ -498,7 +509,7 @@ class TransactionsCompanion extends UpdateCompanion<TransactionData> {
     return TransactionsCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
-      amount: amount ?? this.amount,
+      amountSatang: amountSatang ?? this.amountSatang,
       date: date ?? this.date,
       category: category ?? this.category,
       cleared: cleared ?? this.cleared,
@@ -518,8 +529,8 @@ class TransactionsCompanion extends UpdateCompanion<TransactionData> {
     if (name.present) {
       map['name'] = Variable<String>(name.value);
     }
-    if (amount.present) {
-      map['amount'] = Variable<double>(amount.value);
+    if (amountSatang.present) {
+      map['amount_satang'] = Variable<int>(amountSatang.value);
     }
     if (date.present) {
       map['date'] = Variable<String>(date.value);
@@ -550,7 +561,7 @@ class TransactionsCompanion extends UpdateCompanion<TransactionData> {
     return (StringBuffer('TransactionsCompanion(')
           ..write('id: $id, ')
           ..write('name: $name, ')
-          ..write('amount: $amount, ')
+          ..write('amountSatang: $amountSatang, ')
           ..write('date: $date, ')
           ..write('category: $category, ')
           ..write('cleared: $cleared, ')
@@ -2096,7 +2107,7 @@ typedef $$TransactionsTableCreateCompanionBuilder =
     TransactionsCompanion Function({
       required String id,
       required String name,
-      required double amount,
+      required int amountSatang,
       required String date,
       required String category,
       Value<bool> cleared,
@@ -2109,7 +2120,7 @@ typedef $$TransactionsTableUpdateCompanionBuilder =
     TransactionsCompanion Function({
       Value<String> id,
       Value<String> name,
-      Value<double> amount,
+      Value<int> amountSatang,
       Value<String> date,
       Value<String> category,
       Value<bool> cleared,
@@ -2138,8 +2149,8 @@ class $$TransactionsTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<double> get amount => $composableBuilder(
-    column: $table.amount,
+  ColumnFilters<int> get amountSatang => $composableBuilder(
+    column: $table.amountSatang,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -2193,8 +2204,8 @@ class $$TransactionsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<double> get amount => $composableBuilder(
-    column: $table.amount,
+  ColumnOrderings<int> get amountSatang => $composableBuilder(
+    column: $table.amountSatang,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -2244,8 +2255,10 @@ class $$TransactionsTableAnnotationComposer
   GeneratedColumn<String> get name =>
       $composableBuilder(column: $table.name, builder: (column) => column);
 
-  GeneratedColumn<double> get amount =>
-      $composableBuilder(column: $table.amount, builder: (column) => column);
+  GeneratedColumn<int> get amountSatang => $composableBuilder(
+    column: $table.amountSatang,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<String> get date =>
       $composableBuilder(column: $table.date, builder: (column) => column);
@@ -2300,7 +2313,7 @@ class $$TransactionsTableTableManager
               ({
                 Value<String> id = const Value.absent(),
                 Value<String> name = const Value.absent(),
-                Value<double> amount = const Value.absent(),
+                Value<int> amountSatang = const Value.absent(),
                 Value<String> date = const Value.absent(),
                 Value<String> category = const Value.absent(),
                 Value<bool> cleared = const Value.absent(),
@@ -2311,7 +2324,7 @@ class $$TransactionsTableTableManager
               }) => TransactionsCompanion(
                 id: id,
                 name: name,
-                amount: amount,
+                amountSatang: amountSatang,
                 date: date,
                 category: category,
                 cleared: cleared,
@@ -2324,7 +2337,7 @@ class $$TransactionsTableTableManager
               ({
                 required String id,
                 required String name,
-                required double amount,
+                required int amountSatang,
                 required String date,
                 required String category,
                 Value<bool> cleared = const Value.absent(),
@@ -2335,7 +2348,7 @@ class $$TransactionsTableTableManager
               }) => TransactionsCompanion.insert(
                 id: id,
                 name: name,
-                amount: amount,
+                amountSatang: amountSatang,
                 date: date,
                 category: category,
                 cleared: cleared,

@@ -1,4 +1,5 @@
-﻿import 'package:equatable/equatable.dart';
+import 'package:equatable/equatable.dart';
+import 'package:levelup_money_life/shared/models/app_message.dart';
 import 'package:levelup_money_life/domain/models/budget/budget_item.dart';
 import 'package:levelup_money_life/domain/models/gamification/quest.dart';
 import 'package:levelup_money_life/domain/models/gamification/user_profile.dart';
@@ -13,8 +14,8 @@ class DashboardState extends Equatable {
   final List<TransactionItem> recentTransactions;
   final List<QuestItem> activeQuests;
   final List<BudgetItem> budgets;
-  final String? errorMessage;
-  final String? notificationMessage;
+  final AppMessage? errorMessage;
+  final AppMessage? notificationMessage;
 
   const DashboardState({
     this.status = DashboardStatus.initial,
@@ -39,8 +40,8 @@ class DashboardState extends Equatable {
     List<TransactionItem>? recentTransactions,
     List<QuestItem>? activeQuests,
     List<BudgetItem>? budgets,
-    String? errorMessage,
-    String? notificationMessage,
+    AppMessage? errorMessage,
+    AppMessage? notificationMessage,
   }) {
     return DashboardState(
       status: status ?? this.status,

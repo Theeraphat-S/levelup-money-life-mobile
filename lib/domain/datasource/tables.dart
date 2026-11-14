@@ -4,7 +4,10 @@ import 'package:drift/drift.dart';
 class Transactions extends Table {
   TextColumn get id => text()();
   TextColumn get name => text()();
-  RealColumn get amount => real()();
+
+  /// Signed amount in integer satang (1 baht = 100). Stored as an integer so
+  /// totals never pick up floating-point drift. Was REAL `amount` before v4.
+  IntColumn get amountSatang => integer().named('amount_satang')();
   TextColumn get date => text()();
   TextColumn get category => text()();
   BoolColumn get cleared => boolean().withDefault(const Constant(true))();
@@ -43,7 +46,8 @@ class Quests extends Table {
 @DataClassName('UserProfileData')
 class UserProfiles extends Table {
   TextColumn get id => text().withDefault(const Constant('user_main'))();
-  TextColumn get name => text().withDefault(const Constant('Finance Commander'))();
+  TextColumn get name =>
+      text().withDefault(const Constant('Finance Commander'))();
   IntColumn get totalXp => integer().withDefault(const Constant(180))();
   IntColumn get streakDays => integer().withDefault(const Constant(1))();
   TextColumn get lastActiveDate => text()();
@@ -69,4 +73,3 @@ class AppSettings extends Table {
   @override
   Set<Column> get primaryKey => {key};
 }
-

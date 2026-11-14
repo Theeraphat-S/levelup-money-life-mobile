@@ -1,4 +1,5 @@
-﻿import 'package:equatable/equatable.dart';
+import 'package:equatable/equatable.dart';
+import 'package:levelup_money_life/shared/models/app_message.dart';
 import 'package:levelup_money_life/domain/models/gamification/achievement.dart';
 import 'package:levelup_money_life/domain/models/gamification/quest.dart';
 import 'package:levelup_money_life/domain/models/gamification/user_profile.dart';
@@ -10,8 +11,8 @@ class GamificationState extends Equatable {
   final UserProfile? userProfile;
   final List<QuestItem> dailyQuests;
   final List<AchievementItem> achievements;
-  final String? message;
-  final String? errorMessage;
+  final AppMessage? message;
+  final AppMessage? errorMessage;
 
   const GamificationState({
     this.status = GamificationStatus.initial,
@@ -27,8 +28,8 @@ class GamificationState extends Equatable {
     UserProfile? userProfile,
     List<QuestItem>? dailyQuests,
     List<AchievementItem>? achievements,
-    String? message,
-    String? errorMessage,
+    AppMessage? message,
+    AppMessage? errorMessage,
   }) {
     return GamificationState(
       status: status ?? this.status,

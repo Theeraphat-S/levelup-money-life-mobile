@@ -94,5 +94,17 @@
   "quest_q3": "Transfer savings to emergency reserve fund",
   "@quest_q3": {
     "description": "Default quest 3"
+  },
+  "quest_q1_title": "Record all daily expenses for today",
+  "@quest_q1_title": {
+    "description": "Default daily quest q1"
+  },
+  "quest_q2_title": "Review your 50/30/20 budget allocation",
+  "@quest_q2_title": {
+    "description": "Default daily quest q2"
+  },
+  "quest_q3_title": "Transfer savings to emergency reserve fund",
+  "@quest_q3_title": {
+    "description": "Default daily quest q3"
   }
 }

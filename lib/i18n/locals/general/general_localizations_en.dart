@@ -82,4 +82,80 @@ class GeneralLocalizationsEn extends GeneralLocalizations {
 
   @override
   String get copied_to_clipboard => 'Copied to clipboard';
+
+  @override
+  String get backup_error_unsupported_version => 'This backup was made by a newer app version and can\'t be restored.';
+
+  @override
+  String backup_error_invalid_transactions(String detail) {
+    return 'Backup has an invalid transaction ($detail). Nothing was changed.';
+  }
+
+  @override
+  String backup_error_invalid_allocations(String detail) {
+    return 'Backup has an invalid budget allocation ($detail). Nothing was changed.';
+  }
+
+  @override
+  String backup_error_invalid_quests(String detail) {
+    return 'Backup has an invalid quest ($detail). Nothing was changed.';
+  }
+
+  @override
+  String backup_error_invalid_gamification(String detail) {
+    return 'Backup has invalid XP / streak data ($detail). Nothing was changed.';
+  }
+
+  @override
+  String backup_error_invalid_settings(String detail) {
+    return 'Backup has an invalid setting ($detail). Nothing was changed.';
+  }
+
+  @override
+  String get backup_error_database => 'Couldn\'t write the backup to the database. Your existing data was not changed.';
+
+  @override
+  String get msg_load_failed => 'Couldn\'t load data. Please try again.';
+
+  @override
+  String get msg_save_failed => 'Couldn\'t save the transaction.';
+
+  @override
+  String get msg_update_failed => 'Couldn\'t update the transaction.';
+
+  @override
+  String get msg_delete_failed => 'Couldn\'t delete the transaction.';
+
+  @override
+  String get msg_generic_error => 'Something went wrong. Please try again.';
+
+  @override
+  String get msg_budget_save_failed => 'Couldn\'t save the budget allocation.';
+
+  @override
+  String get msg_income_save_failed => 'Couldn\'t save your monthly income.';
+
+  @override
+  String get msg_checkin_failed => 'Daily check-in failed.';
+
+  @override
+  String get msg_reward_claim_failed => 'Couldn\'t claim the reward.';
+
+  @override
+  String msg_checkin_success(int xp) {
+    return 'Checked in! +$xp XP';
+  }
+
+  @override
+  String msg_quest_completed(int xp) {
+    return 'Quest complete! +$xp XP';
+  }
+
+  @override
+  String get msg_quest_reverted => 'Quest marked as not done.';
+
+  @override
+  String msg_quest_reward_claimed(int xp) {
+    return 'Reward claimed! +$xp XP';
+  }
 }

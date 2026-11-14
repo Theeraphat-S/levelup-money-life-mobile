@@ -57,5 +57,3 @@ class AppLocalizations {
   TransactionLocalizations get transaction => TransactionLocalizations.of(context)!;
 
 }
-
-

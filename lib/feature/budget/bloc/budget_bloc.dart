@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:levelup_money_life/shared/models/app_message.dart';
 import 'package:levelup_money_life/domain/models/budget/allocation_item.dart';
 import 'package:levelup_money_life/domain/models/transaction/category_item.dart';
 import 'package:levelup_money_life/domain/models/transaction/transaction_item.dart';
@@ -16,7 +17,7 @@ class BudgetState extends Equatable {
   final double monthlyIncome;
   final List<AllocationItem> allocations;
   final List<BucketSpendingSummary> summaries;
-  final String? errorMessage;
+  final AppMessage? errorMessage;
 
   const BudgetState({
     this.status = BudgetStatus.initial,
@@ -36,7 +37,7 @@ class BudgetState extends Equatable {
     double? monthlyIncome,
     List<AllocationItem>? allocations,
     List<BucketSpendingSummary>? summaries,
-    String? errorMessage,
+    AppMessage? errorMessage,
   }) {
     return BudgetState(
       status: status ?? this.status,
@@ -49,12 +50,12 @@ class BudgetState extends Equatable {
 
   @override
   List<Object?> get props => [
-        status,
-        monthlyIncome,
-        allocations,
-        summaries,
-        errorMessage,
-      ];
+    status,
+    monthlyIncome,
+    allocations,
+    summaries,
+    errorMessage,
+  ];
 }
 
 // Events
@@ -117,23 +118,23 @@ class BudgetBloc extends Bloc<BudgetEvent, BudgetState> {
       await emit.forEach<List<TransactionItem>>(
         transactionRepository.watchTransactions(monthFilter: _monthFilter),
         onData: (transactions) {
-          double needsSpent = 0.0;
-          double wantsSpent = 0.0;
-          double savingsSpent = 0.0;
+          var needsSatang = 0;
+          var wantsSatang = 0;
+          var savingsSatang = 0;
 
           for (final tx in transactions) {
             if (tx.isIncome) continue;
             final cat = tx.categoryItem;
-            final absAmt = tx.absAmount;
+            final absAmt = tx.absAmountSatang;
 
             if (cat.bucket == BudgetBucket.needs) {
-              needsSpent += absAmt;
+              needsSatang += absAmt;
             } else if (cat.bucket == BudgetBucket.wants) {
-              wantsSpent += absAmt;
+              wantsSatang += absAmt;
             } else if (cat.bucket == BudgetBucket.savings) {
-              savingsSpent += absAmt;
+              savingsSatang += absAmt;
             } else {
-              needsSpent += absAmt;
+              needsSatang += absAmt;
             }
           }
 
@@ -141,11 +142,11 @@ class BudgetBloc extends Bloc<BudgetEvent, BudgetState> {
             final budgetAmount = (income * alloc.percent) / 100.0;
             double spent = 0.0;
             if (alloc.id == 'needs') {
-              spent = needsSpent;
+              spent = satangToBaht(needsSatang);
             } else if (alloc.id == 'wants') {
-              spent = wantsSpent;
+              spent = satangToBaht(wantsSatang);
             } else if (alloc.id == 'savings') {
-              spent = savingsSpent;
+              spent = satangToBaht(savingsSatang);
             }
 
             final remaining = budgetAmount - spent;
@@ -172,16 +173,22 @@ class BudgetBloc extends Bloc<BudgetEvent, BudgetState> {
             summaries: summaries,
           );
         },
-        onError: (e, stack) => state.copyWith(
+        onError: (e, stack) {
+          addError(e, stack);
+          return state.copyWith(
+            status: BudgetStatus.failure,
+            errorMessage: const AppMessage(AppMessageCode.loadFailed),
+          );
+        },
+      );
+    } catch (e, st) {
+      addError(e, st);
+      emit(
+        state.copyWith(
           status: BudgetStatus.failure,
-          errorMessage: 'ไม่สามารถโหลดข้อมูลงบประมาณได้: $e',
+          errorMessage: const AppMessage(AppMessageCode.loadFailed),
         ),
       );
-    } catch (e) {
-      emit(state.copyWith(
-        status: BudgetStatus.failure,
-        errorMessage: 'ไม่สามารถโหลดข้อมูลงบประมาณได้: $e',
-      ));
     }
   }
 
@@ -193,8 +200,13 @@ class BudgetBloc extends Bloc<BudgetEvent, BudgetState> {
       await budgetRepository.saveAllocations(event.allocations);
       await gamificationRepository.evaluateAchievements();
       add(const LoadBudgetDataEvent());
-    } catch (e) {
-      emit(state.copyWith(errorMessage: 'เกิดข้อผิดพลาดในการบันทึกสัดส่วนงบ: $e'));
+    } catch (e, st) {
+      addError(e, st);
+      emit(
+        state.copyWith(
+          errorMessage: const AppMessage(AppMessageCode.budgetSaveFailed),
+        ),
+      );
     }
   }
 
@@ -205,8 +217,13 @@ class BudgetBloc extends Bloc<BudgetEvent, BudgetState> {
     try {
       await budgetRepository.saveMonthlyIncome(event.income);
       add(const LoadBudgetDataEvent());
-    } catch (e) {
-      emit(state.copyWith(errorMessage: 'เกิดข้อผิดพลาดในการบันทึกรายได้: $e'));
+    } catch (e, st) {
+      addError(e, st);
+      emit(
+        state.copyWith(
+          errorMessage: const AppMessage(AppMessageCode.incomeSaveFailed),
+        ),
+      );
     }
   }
 }

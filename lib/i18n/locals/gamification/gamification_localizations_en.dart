@@ -65,4 +65,13 @@ class GamificationLocalizationsEn extends GamificationLocalizations {
 
   @override
   String get quest_q3 => 'Transfer savings to emergency reserve fund';
+
+  @override
+  String get quest_q1_title => 'Record all daily expenses for today';
+
+  @override
+  String get quest_q2_title => 'Review your 50/30/20 budget allocation';
+
+  @override
+  String get quest_q3_title => 'Transfer savings to emergency reserve fund';
 }

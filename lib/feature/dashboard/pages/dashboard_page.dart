@@ -31,11 +31,13 @@ class DashboardPage extends StatelessWidget {
       backgroundColor: PColor.base(context),
       body: BlocConsumer<DashboardBloc, DashboardState>(
         listener: (context, state) {
-          if (state.notificationMessage != null) {
+          final message = state.notificationMessage ?? state.errorMessage;
+          if (message != null) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text(state.notificationMessage!),
-                backgroundColor: PColor.jadeLight,
+                content: Text(message.localize(context)),
+                backgroundColor:
+                    message.isError ? PColor.roseLight : PColor.jadeLight,
                 duration: const Duration(seconds: 3),
               ),
             );

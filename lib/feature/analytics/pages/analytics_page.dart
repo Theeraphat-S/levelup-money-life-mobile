@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:levelup_money_life/domain/models/transaction/transaction_item.dart';
 import 'package:levelup_money_life/domain/models/transaction/category_item.dart';
 import 'package:levelup_money_life/feature/transaction/bloc/transaction_bloc.dart';
 import 'package:levelup_money_life/feature/transaction/bloc/transaction_event.dart';
@@ -27,19 +28,18 @@ class AnalyticsPage extends StatelessWidget {
         builder: (context, state) {
           final transactions = state.allTransactions;
 
-          double totalIncome = 0.0;
-          double totalExpense = 0.0;
-          final Map<String, double> categorySpending = {};
-
+          final money = MoneySummary.of(transactions);
+          final totalIncome = money.totalIncome;
+          final totalExpense = money.totalExpense;
+          final Map<String, int> categorySatang = {};
           for (final tx in transactions) {
-            if (tx.isIncome) {
-              totalIncome += tx.absAmount;
-            } else {
-              totalExpense += tx.absAmount;
-              categorySpending[tx.category] =
-                  (categorySpending[tx.category] ?? 0.0) + tx.absAmount;
+            if (!tx.isIncome) {
+              categorySatang[tx.category] =
+                  (categorySatang[tx.category] ?? 0) + tx.absAmountSatang;
             }
           }
+          final categorySpending =
+              categorySatang.map((k, v) => MapEntry(k, satangToBaht(v)));
 
           final sortedCategories = categorySpending.entries.toList()
             ..sort((a, b) => b.value.compareTo(a.value));

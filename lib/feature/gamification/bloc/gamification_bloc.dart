@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:levelup_money_life/shared/models/app_message.dart';
 import 'package:levelup_money_life/domain/repositories/gamification_repository.dart';
 import 'package:levelup_money_life/domain/repositories/user_repository.dart';
 import 'package:levelup_money_life/feature/gamification/bloc/gamification_event.dart';
@@ -28,17 +29,22 @@ class GamificationBloc extends Bloc<GamificationEvent, GamificationState> {
       final user = await userRepository.getUserProfile();
       final quests = await gamificationRepository.getDailyQuests();
 
-      emit(state.copyWith(
-        status: GamificationStatus.success,
-        userProfile: user,
-        dailyQuests: quests,
-        achievements: evalResult.allAchievements,
-      ));
-    } catch (e) {
-      emit(state.copyWith(
-        status: GamificationStatus.failure,
-        errorMessage: 'ไม่สามารถโหลดข้อมูลเควสได้: $e',
-      ));
+      emit(
+        state.copyWith(
+          status: GamificationStatus.success,
+          userProfile: user,
+          dailyQuests: quests,
+          achievements: evalResult.allAchievements,
+        ),
+      );
+    } catch (e, st) {
+      addError(e, st);
+      emit(
+        state.copyWith(
+          status: GamificationStatus.failure,
+          errorMessage: const AppMessage(AppMessageCode.loadFailed),
+        ),
+      );
     }
   }
 
@@ -52,16 +58,23 @@ class GamificationBloc extends Bloc<GamificationEvent, GamificationState> {
       final user = await userRepository.getUserProfile();
       final quests = await gamificationRepository.getDailyQuests();
 
-      emit(state.copyWith(
-        userProfile: user,
-        dailyQuests: quests,
-        achievements: evalResult.allAchievements,
-        message: updated.done
-            ? 'ทำเควสสำเร็จ! +${updated.xp} XP'
-            : 'ยกเลิกสถานะเควสเรียบร้อย',
-      ));
-    } catch (e) {
-      emit(state.copyWith(errorMessage: 'เกิดข้อผิดพลาด: $e'));
+      emit(
+        state.copyWith(
+          userProfile: user,
+          dailyQuests: quests,
+          achievements: evalResult.allAchievements,
+          message: updated.done
+              ? AppMessage(AppMessageCode.questCompleted, xp: updated.xp)
+              : const AppMessage(AppMessageCode.questReverted),
+        ),
+      );
+    } catch (e, st) {
+      addError(e, st);
+      emit(
+        state.copyWith(
+          errorMessage: const AppMessage(AppMessageCode.genericError),
+        ),
+      );
     }
   }
 
@@ -70,20 +83,31 @@ class GamificationBloc extends Bloc<GamificationEvent, GamificationState> {
     Emitter<GamificationState> emit,
   ) async {
     try {
-      final claimed =
-          await gamificationRepository.claimQuestReward(event.questId);
+      final claimed = await gamificationRepository.claimQuestReward(
+        event.questId,
+      );
       final evalResult = await gamificationRepository.evaluateAchievements();
       final user = await userRepository.getUserProfile();
       final quests = await gamificationRepository.getDailyQuests();
 
-      emit(state.copyWith(
-        userProfile: user,
-        dailyQuests: quests,
-        achievements: evalResult.allAchievements,
-        message: 'ปลดล็อกสำเร็จ! ได้รับ +${claimed.xp} XP',
-      ));
-    } catch (e) {
-      emit(state.copyWith(errorMessage: 'เกิดข้อผิดพลาดในการรับรางวัล: $e'));
+      emit(
+        state.copyWith(
+          userProfile: user,
+          dailyQuests: quests,
+          achievements: evalResult.allAchievements,
+          message: AppMessage(
+            AppMessageCode.questRewardClaimed,
+            xp: claimed.xp,
+          ),
+        ),
+      );
+    } catch (e, st) {
+      addError(e, st);
+      emit(
+        state.copyWith(
+          errorMessage: const AppMessage(AppMessageCode.rewardClaimFailed),
+        ),
+      );
     }
   }
 }

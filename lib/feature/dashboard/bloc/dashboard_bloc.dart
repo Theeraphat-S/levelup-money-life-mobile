@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:levelup_money_life/shared/models/app_message.dart';
 import 'package:levelup_money_life/domain/models/gamification/quest.dart';
 import 'package:levelup_money_life/domain/models/gamification/user_profile.dart';
 import 'package:levelup_money_life/domain/models/transaction/transaction_item.dart';
@@ -55,22 +56,7 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
               (transactions: transactions, user: user, quests: quests),
         ),
         onData: (snapshot) {
-          double totalIncome = 0.0;
-          double totalExpense = 0.0;
-          for (final tx in snapshot.transactions) {
-            if (tx.isIncome) {
-              totalIncome += tx.absAmount;
-            } else {
-              totalExpense += tx.absAmount;
-            }
-          }
-          final netSavings = totalIncome - totalExpense;
-          final summary = {
-            'totalIncome': totalIncome,
-            'totalExpense': totalExpense,
-            'netSavings': netSavings,
-            'totalBalance': netSavings,
-          };
+          final summary = MoneySummary.of(snapshot.transactions).toMap();
 
           return state.copyWith(
             status: DashboardStatus.success,
@@ -80,16 +66,20 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
             activeQuests: snapshot.quests,
           );
         },
-        onError: (e, stack) => state.copyWith(
-          status: DashboardStatus.failure,
-          errorMessage: 'ไม่สามารถโหลดข้อมูลได้: $e',
-        ),
+        onError: (e, stack) {
+          addError(e, stack);
+          return state.copyWith(
+            status: DashboardStatus.failure,
+            errorMessage: const AppMessage(AppMessageCode.loadFailed),
+          );
+        },
       );
-    } catch (e) {
+    } catch (e, st) {
+      addError(e, st);
       emit(
         state.copyWith(
           status: DashboardStatus.failure,
-          errorMessage: 'ไม่สามารถโหลดข้อมูลได้: $e',
+          errorMessage: const AppMessage(AppMessageCode.loadFailed),
         ),
       );
     }
@@ -104,11 +94,19 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
       emit(
         state.copyWith(
           userProfile: updatedUser,
-          notificationMessage: 'เช็คอินสำเร็จ! ได้รับ +20 EXP',
+          notificationMessage: const AppMessage(
+            AppMessageCode.checkInSuccess,
+            xp: 20,
+          ),
         ),
       );
-    } catch (e) {
-      emit(state.copyWith(errorMessage: 'เกิดข้อผิดพลาดในการเช็คอิน: $e'));
+    } catch (e, st) {
+      addError(e, st);
+      emit(
+        state.copyWith(
+          errorMessage: const AppMessage(AppMessageCode.checkInFailed),
+        ),
+      );
     }
   }
 
@@ -127,11 +125,19 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
         state.copyWith(
           userProfile: updatedUser,
           activeQuests: quests,
-          notificationMessage: 'รับรางวัลภารกิจสำเร็จ! +${claimedQuest.xp} EXP',
+          notificationMessage: AppMessage(
+            AppMessageCode.questRewardClaimed,
+            xp: claimedQuest.xp,
+          ),
         ),
       );
-    } catch (e) {
-      emit(state.copyWith(errorMessage: 'ไม่สามารถรับรางวัลได้: $e'));
+    } catch (e, st) {
+      addError(e, st);
+      emit(
+        state.copyWith(
+          errorMessage: const AppMessage(AppMessageCode.rewardClaimFailed),
+        ),
+      );
     }
   }
 }

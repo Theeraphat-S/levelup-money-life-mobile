@@ -244,6 +244,126 @@ abstract class GeneralLocalizations {
   /// In en, this message translates to:
   /// **'Copied to clipboard'**
   String get copied_to_clipboard;
+
+  /// Backup version is not supported
+  ///
+  /// In en, this message translates to:
+  /// **'This backup was made by a newer app version and can\'t be restored.'**
+  String get backup_error_unsupported_version;
+
+  /// Invalid transaction in backup
+  ///
+  /// In en, this message translates to:
+  /// **'Backup has an invalid transaction ({detail}). Nothing was changed.'**
+  String backup_error_invalid_transactions(String detail);
+
+  /// Invalid allocation in backup
+  ///
+  /// In en, this message translates to:
+  /// **'Backup has an invalid budget allocation ({detail}). Nothing was changed.'**
+  String backup_error_invalid_allocations(String detail);
+
+  /// Invalid quest in backup
+  ///
+  /// In en, this message translates to:
+  /// **'Backup has an invalid quest ({detail}). Nothing was changed.'**
+  String backup_error_invalid_quests(String detail);
+
+  /// Invalid gamification data in backup
+  ///
+  /// In en, this message translates to:
+  /// **'Backup has invalid XP / streak data ({detail}). Nothing was changed.'**
+  String backup_error_invalid_gamification(String detail);
+
+  /// Invalid setting in backup
+  ///
+  /// In en, this message translates to:
+  /// **'Backup has an invalid setting ({detail}). Nothing was changed.'**
+  String backup_error_invalid_settings(String detail);
+
+  /// Database error while restoring
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t write the backup to the database. Your existing data was not changed.'**
+  String get backup_error_database;
+
+  /// Generic load failure
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t load data. Please try again.'**
+  String get msg_load_failed;
+
+  /// Transaction save failure
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t save the transaction.'**
+  String get msg_save_failed;
+
+  /// Transaction update failure
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t update the transaction.'**
+  String get msg_update_failed;
+
+  /// Transaction delete failure
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t delete the transaction.'**
+  String get msg_delete_failed;
+
+  /// Generic error
+  ///
+  /// In en, this message translates to:
+  /// **'Something went wrong. Please try again.'**
+  String get msg_generic_error;
+
+  /// Budget allocation save failure
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t save the budget allocation.'**
+  String get msg_budget_save_failed;
+
+  /// Monthly income save failure
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t save your monthly income.'**
+  String get msg_income_save_failed;
+
+  /// Check-in failure
+  ///
+  /// In en, this message translates to:
+  /// **'Daily check-in failed.'**
+  String get msg_checkin_failed;
+
+  /// Reward claim failure
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t claim the reward.'**
+  String get msg_reward_claim_failed;
+
+  /// Daily check-in success
+  ///
+  /// In en, this message translates to:
+  /// **'Checked in! +{xp} XP'**
+  String msg_checkin_success(int xp);
+
+  /// Quest completed
+  ///
+  /// In en, this message translates to:
+  /// **'Quest complete! +{xp} XP'**
+  String msg_quest_completed(int xp);
+
+  /// Quest un-completed
+  ///
+  /// In en, this message translates to:
+  /// **'Quest marked as not done.'**
+  String get msg_quest_reverted;
+
+  /// Quest reward claimed
+  ///
+  /// In en, this message translates to:
+  /// **'Reward claimed! +{xp} XP'**
+  String msg_quest_reward_claimed(int xp);
 }
 
 class _GeneralLocalizationsDelegate extends LocalizationsDelegate<GeneralLocalizations> {

@@ -1,4 +1,4 @@
-﻿import 'package:drift/native.dart';
+import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:levelup_money_life/domain/datasource/app_database.dart';
 import 'package:levelup_money_life/domain/models/transaction/transaction_item.dart';
@@ -133,8 +133,8 @@ void main() {
       expect(postResetTxs.length, greaterThanOrEqualTo(8));
 
       // Test Import
-      final success = await db.importBackupJson(backup);
-      expect(success, true);
+      final result = await db.importBackupJson(backup);
+      expect(result.success, isTrue, reason: result.toString());
     });
 
     test('watchTransactions emits updated list reactively when new transaction is added', () async {

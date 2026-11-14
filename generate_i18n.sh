@@ -76,7 +76,10 @@ done
 cat >> "$I18N_FILE" << 'EOF'
       ];
 
+  static List<Locale> get supportedLocales => I18n.all;
+
   AppLocalizations(this.context);
+
 EOF
 
 # เพิ่ม getter

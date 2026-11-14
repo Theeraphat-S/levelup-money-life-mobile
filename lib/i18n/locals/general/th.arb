@@ -99,5 +99,125 @@
   "copied_to_clipboard": "คัดลอกลงคลิปบอร์ดแล้ว",
   "@copied_to_clipboard": {
     "description": "Copied to clipboard"
+  },
+  "backup_error_unsupported_version": "ไฟล์สำรองนี้มาจากแอปเวอร์ชันที่ใหม่กว่า จึงกู้คืนไม่ได้",
+  "@backup_error_unsupported_version": {
+    "description": "Backup version is not supported"
+  },
+  "backup_error_invalid_transactions": "ข้อมูลรายการในไฟล์สำรองไม่ถูกต้อง ({detail}) ข้อมูลเดิมไม่ถูกเปลี่ยนแปลง",
+  "@backup_error_invalid_transactions": {
+    "description": "Invalid transaction in backup",
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "backup_error_invalid_allocations": "ข้อมูลสัดส่วนงบประมาณในไฟล์สำรองไม่ถูกต้อง ({detail}) ข้อมูลเดิมไม่ถูกเปลี่ยนแปลง",
+  "@backup_error_invalid_allocations": {
+    "description": "Invalid allocation in backup",
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "backup_error_invalid_quests": "ข้อมูลเควสในไฟล์สำรองไม่ถูกต้อง ({detail}) ข้อมูลเดิมไม่ถูกเปลี่ยนแปลง",
+  "@backup_error_invalid_quests": {
+    "description": "Invalid quest in backup",
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "backup_error_invalid_gamification": "ข้อมูล XP / สตรีคในไฟล์สำรองไม่ถูกต้อง ({detail}) ข้อมูลเดิมไม่ถูกเปลี่ยนแปลง",
+  "@backup_error_invalid_gamification": {
+    "description": "Invalid gamification data in backup",
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "backup_error_invalid_settings": "ค่าการตั้งค่าในไฟล์สำรองไม่ถูกต้อง ({detail}) ข้อมูลเดิมไม่ถูกเปลี่ยนแปลง",
+  "@backup_error_invalid_settings": {
+    "description": "Invalid setting in backup",
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "backup_error_database": "บันทึกข้อมูลสำรองลงฐานข้อมูลไม่สำเร็จ ข้อมูลเดิมไม่ถูกเปลี่ยนแปลง",
+  "@backup_error_database": {
+    "description": "Database error while restoring"
+  },
+  "msg_load_failed": "โหลดข้อมูลไม่สำเร็จ ลองใหม่อีกครั้ง",
+  "@msg_load_failed": {
+    "description": "Generic load failure"
+  },
+  "msg_save_failed": "ไม่สามารถบันทึกรายการได้",
+  "@msg_save_failed": {
+    "description": "Transaction save failure"
+  },
+  "msg_update_failed": "ไม่สามารถแก้ไขรายการได้",
+  "@msg_update_failed": {
+    "description": "Transaction update failure"
+  },
+  "msg_delete_failed": "ไม่สามารถลบรายการได้",
+  "@msg_delete_failed": {
+    "description": "Transaction delete failure"
+  },
+  "msg_generic_error": "เกิดข้อผิดพลาด ลองใหม่อีกครั้ง",
+  "@msg_generic_error": {
+    "description": "Generic error"
+  },
+  "msg_budget_save_failed": "บันทึกสัดส่วนงบประมาณไม่สำเร็จ",
+  "@msg_budget_save_failed": {
+    "description": "Budget allocation save failure"
+  },
+  "msg_income_save_failed": "บันทึกรายได้ต่อเดือนไม่สำเร็จ",
+  "@msg_income_save_failed": {
+    "description": "Monthly income save failure"
+  },
+  "msg_checkin_failed": "เช็คอินไม่สำเร็จ",
+  "@msg_checkin_failed": {
+    "description": "Check-in failure"
+  },
+  "msg_reward_claim_failed": "รับรางวัลไม่สำเร็จ",
+  "@msg_reward_claim_failed": {
+    "description": "Reward claim failure"
+  },
+  "msg_checkin_success": "เช็คอินสำเร็จ! +{xp} XP",
+  "@msg_checkin_success": {
+    "description": "Daily check-in success",
+    "placeholders": {
+      "xp": {
+        "type": "int"
+      }
+    }
+  },
+  "msg_quest_completed": "ทำเควสสำเร็จ! +{xp} XP",
+  "@msg_quest_completed": {
+    "description": "Quest completed",
+    "placeholders": {
+      "xp": {
+        "type": "int"
+      }
+    }
+  },
+  "msg_quest_reverted": "ยกเลิกสถานะเควสเรียบร้อย",
+  "@msg_quest_reverted": {
+    "description": "Quest un-completed"
+  },
+  "msg_quest_reward_claimed": "ปลดล็อกสำเร็จ! ได้รับ +{xp} XP",
+  "@msg_quest_reward_claimed": {
+    "description": "Quest reward claimed",
+    "placeholders": {
+      "xp": {
+        "type": "int"
+      }
+    }
   }
 }

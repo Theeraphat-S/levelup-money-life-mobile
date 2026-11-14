@@ -1,5 +1,6 @@
-﻿import 'package:drift/drift.dart';
+import 'package:drift/drift.dart';
 import 'package:levelup_money_life/domain/datasource/app_database.dart';
+import 'package:levelup_money_life/domain/datasource/transaction_mapper.dart';
 import 'package:levelup_money_life/domain/models/transaction/category_item.dart';
 import 'package:levelup_money_life/domain/models/transaction/transaction_item.dart';
 
@@ -9,7 +10,10 @@ abstract class TransactionRepositoryInterface {
   Future<List<CategoryItem>> getCategories();
   Future<TransactionItem> createTransaction(TransactionItem tx);
   Future<TransactionItem> updateTransaction(TransactionItem tx);
-  Future<void> deleteTransaction(String id);
+
+  /// Deletes the transaction and takes back the XP it awarded, atomically.
+  /// Returns the deleted item, or null if no transaction had that id.
+  Future<TransactionItem?> deleteTransaction(String id);
   Future<void> toggleCleared(String id);
   Future<void> bulkToggleCleared({required bool cleared, String? monthFilter});
   Future<Map<String, double>> getFinancialSummary({String? monthFilter});
@@ -20,51 +24,28 @@ class TransactionRepository implements TransactionRepositoryInterface {
 
   TransactionRepository(this.db);
 
-  @override
-  Stream<List<TransactionItem>> watchTransactions({String? monthFilter}) {
+  SimpleSelectStatement<$TransactionsTable, TransactionData> _query(
+    String? monthFilter,
+  ) {
     final query = db.select(db.transactions)
-      ..orderBy([(t) => OrderingTerm(expression: t.date, mode: OrderingMode.desc)]);
-
+      ..orderBy(newestTransactionsFirst());
     if (monthFilter != null && monthFilter.isNotEmpty) {
       query.where((t) => t.date.like('$monthFilter%'));
     }
+    return query;
+  }
 
-    return query.watch().map((rows) => rows
-        .map((r) => TransactionItem(
-              id: r.id,
-              name: r.name,
-              amount: r.amount,
-              date: r.date,
-              category: r.category,
-              cleared: r.cleared,
-              notes: r.notes,
-              expGained: r.expGained,
-            ))
-        .toList());
+  @override
+  Stream<List<TransactionItem>> watchTransactions({String? monthFilter}) {
+    return _query(
+      monthFilter,
+    ).watch().map((rows) => rows.map((r) => r.toItem()).toList());
   }
 
   @override
   Future<List<TransactionItem>> getTransactions({String? monthFilter}) async {
-    final query = db.select(db.transactions)
-      ..orderBy([(t) => OrderingTerm(expression: t.date, mode: OrderingMode.desc)]);
-
-    if (monthFilter != null && monthFilter.isNotEmpty) {
-      query.where((t) => t.date.like('$monthFilter%'));
-    }
-
-    final rows = await query.get();
-    return rows
-        .map((r) => TransactionItem(
-              id: r.id,
-              name: r.name,
-              amount: r.amount,
-              date: r.date,
-              category: r.category,
-              cleared: r.cleared,
-              notes: r.notes,
-              expGained: r.expGained,
-            ))
-        .toList();
+    final rows = await _query(monthFilter).get();
+    return rows.map((r) => r.toItem()).toList();
   }
 
   @override
@@ -74,48 +55,51 @@ class TransactionRepository implements TransactionRepositoryInterface {
 
   @override
   Future<TransactionItem> createTransaction(TransactionItem tx) async {
-    await db.into(db.transactions).insert(
-          TransactionsCompanion.insert(
-            id: tx.id,
-            name: tx.name,
-            amount: tx.amount,
-            date: tx.date,
-            category: tx.category,
-            cleared: Value(tx.cleared),
-            notes: Value(tx.notes),
-            expGained: Value(tx.expGained),
-          ),
-          mode: InsertMode.insertOrReplace,
-        );
-    return tx;
+    final stamped = tx.createdAt == null
+        ? tx.copyWith(createdAt: DateTime.now())
+        : tx;
+    await db
+        .into(db.transactions)
+        .insert(stamped.toInsertCompanion(), mode: InsertMode.insertOrReplace);
+    return stamped;
   }
 
   @override
   Future<TransactionItem> updateTransaction(TransactionItem tx) async {
-    await (db.update(db.transactions)..where((t) => t.id.equals(tx.id))).write(
-      TransactionsCompanion(
-        name: Value(tx.name),
-        amount: Value(tx.amount),
-        date: Value(tx.date),
-        category: Value(tx.category),
-        cleared: Value(tx.cleared),
-        notes: Value(tx.notes),
-        expGained: Value(tx.expGained),
-      ),
-    );
+    await (db.update(
+      db.transactions,
+    )..where((t) => t.id.equals(tx.id))).write(tx.toUpdateCompanion());
     return tx;
   }
 
   @override
-  Future<void> deleteTransaction(String id) async {
-    await (db.delete(db.transactions)..where((t) => t.id.equals(id))).go();
+  Future<TransactionItem?> deleteTransaction(String id) {
+    return db.transaction(() async {
+      final row = await (db.select(
+        db.transactions,
+      )..where((t) => t.id.equals(id))).getSingleOrNull();
+      if (row == null) return null;
+
+      await (db.delete(db.transactions)..where((t) => t.id.equals(id))).go();
+
+      if (row.expGained > 0) {
+        // Clamp at 0 so deleting seed rows can never push XP negative.
+        await db.customUpdate(
+          'UPDATE user_profiles SET total_xp = MAX(total_xp - ?, 0) '
+          "WHERE id = 'user_main'",
+          variables: [Variable.withInt(row.expGained)],
+          updates: {db.userProfiles},
+        );
+      }
+      return row.toItem();
+    });
   }
 
   @override
   Future<void> toggleCleared(String id) async {
-    final tx = await (db.select(db.transactions)
-          ..where((t) => t.id.equals(id)))
-        .getSingleOrNull();
+    final tx = await (db.select(
+      db.transactions,
+    )..where((t) => t.id.equals(id))).getSingleOrNull();
     if (tx != null) {
       await (db.update(db.transactions)..where((t) => t.id.equals(id))).write(
         TransactionsCompanion(cleared: Value(!tx.cleared)),
@@ -124,7 +108,10 @@ class TransactionRepository implements TransactionRepositoryInterface {
   }
 
   @override
-  Future<void> bulkToggleCleared({required bool cleared, String? monthFilter}) async {
+  Future<void> bulkToggleCleared({
+    required bool cleared,
+    String? monthFilter,
+  }) async {
     final updateQuery = db.update(db.transactions);
     if (monthFilter != null && monthFilter.isNotEmpty) {
       updateQuery.where((t) => t.date.like('$monthFilter%'));
@@ -135,23 +122,6 @@ class TransactionRepository implements TransactionRepositoryInterface {
   @override
   Future<Map<String, double>> getFinancialSummary({String? monthFilter}) async {
     final txs = await getTransactions(monthFilter: monthFilter);
-    double totalIncome = 0.0;
-    double totalExpense = 0.0;
-
-    for (final tx in txs) {
-      if (tx.isIncome) {
-        totalIncome += tx.absAmount;
-      } else {
-        totalExpense += tx.absAmount;
-      }
-    }
-
-    final netSavings = totalIncome - totalExpense;
-    return {
-      'totalIncome': totalIncome,
-      'totalExpense': totalExpense,
-      'netSavings': netSavings,
-      'totalBalance': netSavings,
-    };
+    return MoneySummary.of(txs).toMap();
   }
 }

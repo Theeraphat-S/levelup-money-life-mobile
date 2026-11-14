@@ -1,4 +1,4 @@
-﻿# PowerShell script to generate i18n localization files
+# PowerShell script to generate i18n localization files
 $ErrorActionPreference = "Stop"
 
 $LocalsDir = Join-Path $PSScriptRoot "lib\i18n\locals"
@@ -84,6 +84,8 @@ foreach ($dir in $directories) {
 }
 
 [void]$sb.AppendLine("      ];")
+[void]$sb.AppendLine("")
+[void]$sb.AppendLine("  static List<Locale> get supportedLocales => I18n.all;")
 [void]$sb.AppendLine("")
 [void]$sb.AppendLine("  AppLocalizations(this.context);")
 [void]$sb.AppendLine("")

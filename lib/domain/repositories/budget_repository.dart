@@ -1,4 +1,4 @@
-﻿import 'package:drift/drift.dart';
+import 'package:drift/drift.dart';
 import 'package:levelup_money_life/domain/datasource/app_database.dart';
 import 'package:levelup_money_life/domain/models/budget/allocation_item.dart';
 import 'package:levelup_money_life/domain/models/transaction/category_item.dart';
@@ -103,23 +103,23 @@ class BudgetRepository implements BudgetRepositoryInterface {
     required List<AllocationItem> allocations,
   }) async {
     // Group expense transactions by bucket
-    double needsSpent = 0.0;
-    double wantsSpent = 0.0;
-    double savingsSpent = 0.0;
+    var needsSatang = 0;
+    var wantsSatang = 0;
+    var savingsSatang = 0;
 
     for (final tx in transactions) {
       if (tx.isIncome) continue;
       final cat = tx.categoryItem;
-      final absAmt = tx.absAmount;
+      final absAmt = tx.absAmountSatang;
 
       if (cat.bucket == BudgetBucket.needs) {
-        needsSpent += absAmt;
+        needsSatang += absAmt;
       } else if (cat.bucket == BudgetBucket.wants) {
-        wantsSpent += absAmt;
+        wantsSatang += absAmt;
       } else if (cat.bucket == BudgetBucket.savings) {
-        savingsSpent += absAmt;
+        savingsSatang += absAmt;
       } else {
-        needsSpent += absAmt;
+        needsSatang += absAmt;
       }
     }
 
@@ -127,11 +127,11 @@ class BudgetRepository implements BudgetRepositoryInterface {
       final budgetAmount = (monthlyIncome * alloc.percent) / 100.0;
       double spent = 0.0;
       if (alloc.id == 'needs') {
-        spent = needsSpent;
+        spent = satangToBaht(needsSatang);
       } else if (alloc.id == 'wants') {
-        spent = wantsSpent;
+        spent = satangToBaht(wantsSatang);
       } else if (alloc.id == 'savings') {
-        spent = savingsSpent;
+        spent = satangToBaht(savingsSatang);
       }
 
       final remaining = budgetAmount - spent;

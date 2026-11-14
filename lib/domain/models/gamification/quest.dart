@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
+import 'package:levelup_money_life/i18n/i18n.dart';
 
 class QuestItem {
   final String id;
@@ -22,21 +23,24 @@ class QuestItem {
   bool get isClaimed => done;
   int get expReward => xp;
   int get coinReward => xp ~/ 2;
+
+  /// Built-in quests (q1-q3) are translated via the gamification ARB files;
+  /// any other quest shows its stored title.
   String getLocalizedTitle(BuildContext context) {
-    final lang = Localizations.localeOf(context).languageCode;
-    if (lang == 'en') {
-      if (id == 'q1') return 'Record all daily expenses for today';
-      if (id == 'q2') return 'Review your 50/30/20 budget allocation';
-      if (id == 'q3') return 'Transfer savings to emergency reserve fund';
-    }
-    return title;
+    final l = AppLocalizations(context).gamification;
+    return switch (id) {
+      'q1' => l.quest_q1_title,
+      'q2' => l.quest_q2_title,
+      'q3' => l.quest_q3_title,
+      _ => title,
+    };
   }
 
   String get description => category == 'daily'
       ? 'Daily Quest'
       : category == 'habit'
-          ? 'Habit Quest'
-          : 'Milestone';
+      ? 'Habit Quest'
+      : 'Milestone';
 
   QuestItem copyWith({
     String? id,
@@ -60,7 +64,8 @@ class QuestItem {
     return QuestItem(
       id: json['id'] as String? ?? 'q_${DateTime.now().millisecondsSinceEpoch}',
       title: json['title'] as String? ?? 'Daily Quest',
-      date: json['date'] as String? ??
+      date:
+          json['date'] as String? ??
           DateFormat('yyyy-MM-dd').format(DateTime.now()),
       xp: json['xp'] as int? ?? json['expReward'] as int? ?? 15,
       done: json['done'] as bool? ?? json['isCompleted'] as bool? ?? false,

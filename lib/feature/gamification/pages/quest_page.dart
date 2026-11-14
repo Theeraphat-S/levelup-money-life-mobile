@@ -81,30 +81,25 @@ class _QuestPageViewState extends State<_QuestPageView> {
                 Expanded(
                   child: BlocConsumer<GamificationBloc, GamificationState>(
                     listener: (context, state) {
-                      if (state.message != null) {
-                        final xpMatch = RegExp(r'\+(\d+)\s*XP').firstMatch(state.message!);
-                        final xp = xpMatch != null ? int.tryParse(xpMatch.group(1) ?? '0') ?? 10 : 10;
-
-                        if (state.message!.contains('XP')) {
+                      final message = state.message;
+                      if (message != null) {
+                        final text = message.localize(context);
+                        if (message.xp != null) {
                           _confettiController.play();
                           showFloatingXpToast(
                             context: context,
-                            xpGained: xp,
-                            message: state.message!,
+                            xpGained: message.xp!,
+                            message: text,
                             icon: Icons.military_tech_rounded,
                           );
                         } else {
-                          showSuccessToast(
-                            context: context,
-                            title: state.message!,
-                          );
+                          showSuccessToast(context: context, title: text);
                         }
-                        context.read<DashboardBloc>().add(const LoadDashboardData());
                       }
                       if (state.errorMessage != null) {
                         showErrorToast(
                           context: context,
-                          description: state.errorMessage!,
+                          description: state.errorMessage!.localize(context),
                         );
                       }
                     },

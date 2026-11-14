@@ -1,9 +1,9 @@
 import 'package:drift/drift.dart';
 import 'package:intl/intl.dart';
 import 'package:levelup_money_life/domain/datasource/app_database.dart';
+import 'package:levelup_money_life/domain/datasource/transaction_mapper.dart';
 import 'package:levelup_money_life/domain/models/budget/allocation_item.dart';
 import 'package:levelup_money_life/domain/models/gamification/quest.dart';
-import 'package:levelup_money_life/domain/models/transaction/transaction_item.dart';
 import 'package:levelup_money_life/domain/services/gamification_engine.dart';
 
 abstract class GamificationRepositoryInterface {
@@ -161,20 +161,7 @@ class GamificationRepository implements GamificationRepositoryInterface {
     )..where((u) => u.id.equals('user_main'))).getSingleOrNull();
     final unlockedRows = await db.select(db.unlockedAchievements).get();
 
-    final transactions = txRows
-        .map(
-          (r) => TransactionItem(
-            id: r.id,
-            name: r.name,
-            amount: r.amount,
-            date: r.date,
-            category: r.category,
-            cleared: r.cleared,
-            notes: r.notes,
-            expGained: r.expGained,
-          ),
-        )
-        .toList();
+    final transactions = txRows.map((r) => r.toItem()).toList();
 
     final quests = questRows
         .map(

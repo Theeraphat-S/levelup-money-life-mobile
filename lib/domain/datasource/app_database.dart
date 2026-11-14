@@ -2,12 +2,17 @@ import 'dart:convert';
 import 'package:drift/drift.dart';
 import 'package:drift_flutter/drift_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:levelup_money_life/domain/datasource/backup_parser.dart';
 import 'package:levelup_money_life/domain/datasource/hive_config.dart';
 import 'package:levelup_money_life/domain/datasource/tables.dart';
+import 'package:levelup_money_life/domain/datasource/transaction_mapper.dart';
 import 'package:levelup_money_life/domain/models/budget/allocation_item.dart';
 import 'package:levelup_money_life/domain/models/gamification/quest.dart';
 import 'package:levelup_money_life/domain/models/transaction/transaction_item.dart';
 import 'package:levelup_money_life/domain/services/gamification_engine.dart';
+
+export 'package:levelup_money_life/domain/datasource/backup_parser.dart'
+    show BackupImportError, BackupImportResult;
 
 part 'app_database.g.dart';
 
@@ -24,7 +29,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.e);
 
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 4;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -43,6 +48,16 @@ class AppDatabase extends _$AppDatabase {
             await m.createTable(userProfiles);
             await m.createTable(unlockedAchievements);
             await m.createTable(appSettings);
+          } else if (from < 4) {
+            // v4: REAL baht `amount` -> INTEGER satang `amount_satang`.
+            await m.alterTable(TableMigration(
+              transactions,
+              columnTransformer: {
+                transactions.amountSatang: const CustomExpression<int>(
+                    'CAST(ROUND(amount * 100) AS INTEGER)'),
+              },
+              newColumns: [transactions.amountSatang],
+            ));
           }
         },
       );
@@ -125,19 +140,7 @@ class AppDatabase extends _$AppDatabase {
         await transaction(() async {
           // 1. Transactions
           for (final tx in hiveTxs) {
-            await into(transactions).insert(
-              TransactionsCompanion.insert(
-                id: tx.id,
-                name: tx.name,
-                amount: tx.amount,
-                date: tx.date,
-                category: tx.category,
-                cleared: Value(tx.cleared),
-                notes: Value(tx.notes),
-                expGained: Value(tx.expGained),
-              ),
-              mode: InsertMode.insertOrReplace,
-            );
+            await into(transactions).insert(              tx.toInsertCompanion(),              mode: InsertMode.insertOrReplace,            );
           }
 
           // 2. Allocations
@@ -305,19 +308,7 @@ class AppDatabase extends _$AppDatabase {
     await transaction(() async {
       // 1. Transactions
       for (final tx in sampleTransactions) {
-        await into(transactions).insert(
-          TransactionsCompanion.insert(
-            id: tx.id,
-            name: tx.name,
-            amount: tx.amount,
-            date: tx.date,
-            category: tx.category,
-            cleared: Value(tx.cleared),
-            notes: Value(tx.notes),
-            expGained: Value(tx.expGained),
-          ),
-          mode: InsertMode.insertOrReplace,
-        );
+        await into(transactions).insert(          tx.toInsertCompanion(),          mode: InsertMode.insertOrReplace,        );
       }
 
       // 2. Allocations
@@ -426,12 +417,14 @@ class AppDatabase extends _$AppDatabase {
           .map((t) => {
                 'id': t.id,
                 'name': t.name,
-                'amount': t.amount,
+                'amount': satangToBaht(t.amountSatang),
                 'date': t.date,
                 'category': t.category,
                 'cleared': t.cleared,
                 if (t.notes != null) 'notes': t.notes,
                 'expGained': t.expGained,
+                if (t.createdAt != null)
+                  'createdAt': t.createdAt!.toIso8601String(),
               })
           .toList(),
       'allocations': allAllocs
@@ -465,37 +458,34 @@ class AppDatabase extends _$AppDatabase {
     };
   }
 
-  Future<bool> importBackupJson(Map<String, dynamic> json) async {
+  /// Validates the whole backup first, then replaces data in one database
+  /// transaction. Nothing is deleted unless every section is valid.
+  Future<BackupImportResult> importBackupJson(Map<String, dynamic> json) async {
+    final ParsedBackup backup;
+    try {
+      backup = parseBackup(json);
+    } on BackupValidationException catch (e) {
+      return BackupImportResult.failure(e.error, e.detail);
+    }
+
     try {
       await transaction(() async {
-        // 1. Transactions
-        if (json['transactions'] is List) {
-          await delete(transactions).go();
-          for (final e in (json['transactions'] as List)) {
-            final txMap = Map<String, dynamic>.from(e);
-            final tx = TransactionItem.fromJson(txMap);
-            await into(transactions).insert(
-              TransactionsCompanion.insert(
-                id: tx.id,
-                name: tx.name,
-                amount: tx.amount,
-                date: tx.date,
-                category: tx.category,
-                cleared: Value(tx.cleared),
-                notes: Value(tx.notes),
-                expGained: Value(tx.expGained),
-              ),
+        Future<void> putSetting(String key, String value) =>
+            into(appSettings).insert(
+              AppSettingsCompanion.insert(key: key, value: value),
               mode: InsertMode.insertOrReplace,
             );
+
+        if (backup.transactions != null) {
+          await delete(transactions).go();
+          for (final tx in backup.transactions!) {
+            await into(transactions).insert(tx.toInsertCompanion());
           }
         }
 
-        // 2. Allocations
-        if (json['allocations'] is List) {
+        if (backup.allocations != null) {
           await delete(allocations).go();
-          for (final e in (json['allocations'] as List)) {
-            final aMap = Map<String, dynamic>.from(e);
-            final a = AllocationItem.fromJson(aMap);
+          for (final a in backup.allocations!) {
             await into(allocations).insert(
               AllocationsCompanion.insert(
                 id: a.id,
@@ -503,28 +493,17 @@ class AppDatabase extends _$AppDatabase {
                 percent: a.percent,
                 color: a.color,
               ),
-              mode: InsertMode.insertOrReplace,
             );
           }
         }
 
-        // 3. Monthly income
-        if (json['monthlyIncome'] != null) {
-          await into(appSettings).insert(
-            AppSettingsCompanion.insert(
-              key: 'monthlyIncome',
-              value: json['monthlyIncome'].toString(),
-            ),
-            mode: InsertMode.insertOrReplace,
-          );
+        if (backup.monthlyIncome != null) {
+          await putSetting('monthlyIncome', backup.monthlyIncome.toString());
         }
 
-        // 4. Quests
-        if (json['quests'] is List) {
+        if (backup.quests != null) {
           await delete(quests).go();
-          for (final e in (json['quests'] as List)) {
-            final qMap = Map<String, dynamic>.from(e);
-            final q = QuestItem.fromJson(qMap);
+          for (final q in backup.quests!) {
             await into(quests).insert(
               QuestsCompanion.insert(
                 id: q.id,
@@ -534,68 +513,49 @@ class AppDatabase extends _$AppDatabase {
                 done: Value(q.done),
                 category: q.category,
               ),
-              mode: InsertMode.insertOrReplace,
             );
           }
         }
 
-        // 5. Gamification
-        if (json['gamification'] is Map) {
-          final g = Map<String, dynamic>.from(json['gamification']);
-          final totalXp = (g['totalXp'] as num?)?.toInt() ?? 180;
-          final streakDays = (g['streakDays'] as num?)?.toInt() ?? 1;
-          final lastActiveDate = g['lastActiveDate']?.toString() ??
-              DateFormat('yyyy-MM-dd').format(DateTime.now());
-
+        final g = backup.gamification;
+        if (g != null) {
           await into(userProfiles).insert(
             UserProfilesCompanion.insert(
               id: const Value('user_main'),
               name: const Value('Finance Commander'),
-              totalXp: Value(totalXp),
-              streakDays: Value(streakDays),
-              lastActiveDate: lastActiveDate,
+              totalXp: Value(g.totalXp),
+              streakDays: Value(g.streakDays),
+              lastActiveDate: g.lastActiveDate,
             ),
             mode: InsertMode.insertOrReplace,
           );
 
-          if (g['unlockedAchievementIds'] is List) {
+          if (g.unlockedAchievementIds != null) {
             await delete(unlockedAchievements).go();
-            for (final id in (g['unlockedAchievementIds'] as List)) {
+            for (final id in g.unlockedAchievementIds!) {
               await into(unlockedAchievements).insert(
                 UnlockedAchievementsCompanion.insert(
-                  id: id.toString(),
-                  unlockedAt: lastActiveDate,
+                  id: id,
+                  unlockedAt: g.lastActiveDate,
                 ),
-                mode: InsertMode.insertOrReplace,
               );
             }
           }
         }
 
-        // 6. Settings (Theme & Month)
-        if (json['themeMode'] != null) {
-          await into(appSettings).insert(
-            AppSettingsCompanion.insert(
-              key: 'themeMode',
-              value: json['themeMode'].toString(),
-            ),
-            mode: InsertMode.insertOrReplace,
-          );
+        if (backup.themeMode != null) {
+          await putSetting('themeMode', backup.themeMode!);
         }
-
-        if (json['activeMonth'] != null) {
-          await into(appSettings).insert(
-            AppSettingsCompanion.insert(
-              key: 'activeMonth',
-              value: json['activeMonth'].toString(),
-            ),
-            mode: InsertMode.insertOrReplace,
-          );
+        if (backup.activeMonth != null) {
+          await putSetting('activeMonth', backup.activeMonth!);
         }
       });
-      return true;
-    } catch (_) {
-      return false;
+      return const BackupImportResult.success();
+    } catch (e) {
+      return BackupImportResult.failure(
+        BackupImportError.databaseError,
+        e.toString(),
+      );
     }
   }
 
