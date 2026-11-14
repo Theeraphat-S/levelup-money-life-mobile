@@ -34,8 +34,8 @@ fi
 
 if [ $BUILD_STATUS -eq 0 ]; then
     mkdir -p build/app/outputs/flutter-apk/prod
-    mv build/app/outputs/flutter-apk/app-prod-release.apk build/app/outputs/flutter-apk/prod/mobile_app_standard-${VERSION}.apk
-    echo "<| Build Success => build/app/outputs/flutter-apk/prod/mobile_app_standard-${VERSION}.apk |>"
+    mv build/app/outputs/flutter-apk/app-prod-release.apk build/app/outputs/flutter-apk/prod/levelup_money_life-${VERSION}.apk
+    echo "<| Build Success => build/app/outputs/flutter-apk/prod/levelup_money_life-${VERSION}.apk |>"
 else
     echo "<| build APK failed |>"
     exit 1

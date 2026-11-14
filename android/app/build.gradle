@@ -5,23 +5,42 @@ plugins {
     id "dev.flutter.flutter-gradle-plugin"
 }
 
+// Release signing: android/key.properties (git-ignored) points at the upload
+// keystore. See android/key.properties.example and docs/release-signing.md.
+def keystoreProperties = new Properties()
+def keystorePropertiesFile = rootProject.file("key.properties")
+def hasReleaseKeystore = keystorePropertiesFile.exists()
+if (hasReleaseKeystore) {
+    keystorePropertiesFile.withInputStream { keystoreProperties.load(it) }
+}
+
+// Never let a debug-signed prod bundle reach Google Play.
+def buildsProdBundle = gradle.startParameter.taskNames.any {
+    it.toLowerCase().contains("bundleprodrelease")
+}
+if (buildsProdBundle && !hasReleaseKeystore) {
+    throw new GradleException(
+        "android/key.properties is missing: prod release bundles must be signed " +
+        "with the upload keystore. See docs/release-signing.md.")
+}
+
 android {
     flavorDimensions "app"
     productFlavors {
         local {
             dimension "app"
             applicationId "com.fldp.mobileApp.local"
-            resValue "string", "app_name", "mobile_app_standard Local"
+            resValue "string", "app_name", "LevelUp Money Life Local"
         }
         dev {
             dimension "app"
             applicationId "com.fldp.mobileApp.dev"
-            resValue "string", "app_name", "mobile_app_standard Dev"
+            resValue "string", "app_name", "LevelUp Money Life Dev"
         }
         prod {
             dimension "app"
             applicationId "com.fldp.mobileApp"
-            resValue "string", "app_name", "mobile_app_standard"
+            resValue "string", "app_name", "LevelUp Money Life"
         }
     }
     namespace = "com.fldp.mobileApp_standard"
@@ -48,11 +67,22 @@ android {
         versionName = flutter.versionName
     }
 
+    signingConfigs {
+        release {
+            if (hasReleaseKeystore) {
+                keyAlias = keystoreProperties["keyAlias"]
+                keyPassword = keystoreProperties["keyPassword"]
+                storeFile = file(keystoreProperties["storeFile"])
+                storePassword = keystoreProperties["storePassword"]
+            }
+        }
+    }
+
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig = signingConfigs.debug
+            // Falls back to debug keys only for local `flutter run --release`
+            // and non-prod builds; prod bundles are blocked above.
+            signingConfig = hasReleaseKeystore ? signingConfigs.release : signingConfigs.debug
         }
     }
 }
