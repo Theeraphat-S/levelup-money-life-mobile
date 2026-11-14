@@ -44,8 +44,6 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 
-.env.local
-
 # FVM Version Cache
 .fvm/
 
@@ -53,12 +51,13 @@ app.*.map.json
 android/fastlane/report.xml
 android/fastlane/build/.last_build_id
 
-# Claude
-.claude/*
-.shared/*
-.claude/*
-.agent/*
-.codex/*
-.claude/settings.local.json
-.claude/settings.local.json
+# Secrets: Play Console service accounts and any local env files
+android/service-account-google-for-upload/*.json
 .env
+.env.*
+
+# AI assistant local state
+.claude/*
+.shared/
+.agent/
+.codex/

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:toastification/toastification.dart';
-import 'package:levelup_money_life/config/config.dart';
 import 'package:levelup_money_life/feature/budget/bloc/budget_bloc.dart';
 import 'package:levelup_money_life/feature/dashboard/bloc/dashboard_bloc.dart';
 import 'package:levelup_money_life/feature/dashboard/bloc/dashboard_event.dart';
@@ -21,7 +20,6 @@ import 'package:levelup_money_life/shared/tokens/p_colors.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await loadEnv();
   await initLocator();
 
   // Must match AppGlobalBloc's initial activeMonth; if the persisted month
