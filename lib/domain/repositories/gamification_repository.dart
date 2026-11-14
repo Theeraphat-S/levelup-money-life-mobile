@@ -1,4 +1,5 @@
-﻿import 'package:drift/drift.dart';
+import 'package:drift/drift.dart';
+import 'package:intl/intl.dart';
 import 'package:levelup_money_life/domain/datasource/app_database.dart';
 import 'package:levelup_money_life/domain/models/budget/allocation_item.dart';
 import 'package:levelup_money_life/domain/models/gamification/quest.dart';
@@ -7,6 +8,12 @@ import 'package:levelup_money_life/domain/services/gamification_engine.dart';
 
 abstract class GamificationRepositoryInterface {
   Future<List<QuestItem>> getDailyQuests();
+  Stream<List<QuestItem>> watchDailyQuests();
+
+  /// Rolls every `daily` quest that is not dated today over to today and
+  /// marks it as not done. Safe to call repeatedly; it is a no-op once the
+  /// quests are already current.
+  Future<void> refreshDailyQuests();
   Future<QuestItem> toggleQuest(String questId);
   Future<QuestItem> claimQuestReward(String questId);
   Future<AchievementEvaluationResult> evaluateAchievements();
@@ -23,23 +30,44 @@ class GamificationRepository implements GamificationRepositoryInterface {
     if (rows.isEmpty) {
       return QuestItem.defaultQuests;
     }
-    return rows
-        .map((r) => QuestItem(
-              id: r.id,
-              title: r.title,
-              date: r.date,
-              xp: r.xp,
-              done: r.done,
-              category: r.category,
-            ))
-        .toList();
+    return rows.map(_toQuestItem).toList();
   }
 
   @override
+  Stream<List<QuestItem>> watchDailyQuests() {
+    return db
+        .select(db.quests)
+        .watch()
+        .map(
+          (rows) => rows.isEmpty
+              ? QuestItem.defaultQuests
+              : rows.map(_toQuestItem).toList(),
+        );
+  }
+
+  @override
+  Future<void> refreshDailyQuests() async {
+    final today = DateFormat('yyyy-MM-dd').format(DateTime.now());
+    await (db.update(db.quests)..where(
+          (q) => q.category.equals('daily') & q.date.equals(today).not(),
+        ))
+        .write(QuestsCompanion(date: Value(today), done: const Value(false)));
+  }
+
+  QuestItem _toQuestItem(QuestData r) => QuestItem(
+    id: r.id,
+    title: r.title,
+    date: r.date,
+    xp: r.xp,
+    done: r.done,
+    category: r.category,
+  );
+
+  @override
   Future<QuestItem> toggleQuest(String questId) async {
-    final questRow = await (db.select(db.quests)
-          ..where((q) => q.id.equals(questId)))
-        .getSingleOrNull();
+    final questRow = await (db.select(
+      db.quests,
+    )..where((q) => q.id.equals(questId))).getSingleOrNull();
 
     if (questRow == null) {
       throw Exception('Quest not found: $questId');
@@ -52,9 +80,9 @@ class GamificationRepository implements GamificationRepositoryInterface {
         QuestsCompanion(done: Value(newDone)),
       );
 
-      final user = await (db.select(db.userProfiles)
-            ..where((u) => u.id.equals('user_main')))
-          .getSingleOrNull();
+      final user = await (db.select(
+        db.userProfiles,
+      )..where((u) => u.id.equals('user_main'))).getSingleOrNull();
 
       final currentXp = user?.totalXp ?? 180;
       final adjustedXp = newDone
@@ -77,9 +105,9 @@ class GamificationRepository implements GamificationRepositoryInterface {
 
   @override
   Future<QuestItem> claimQuestReward(String questId) async {
-    final questRow = await (db.select(db.quests)
-          ..where((q) => q.id.equals(questId)))
-        .getSingleOrNull();
+    final questRow = await (db.select(
+      db.quests,
+    )..where((q) => q.id.equals(questId))).getSingleOrNull();
 
     if (questRow == null) {
       throw Exception('Quest not found: $questId');
@@ -91,13 +119,16 @@ class GamificationRepository implements GamificationRepositoryInterface {
           const QuestsCompanion(done: Value(true)),
         );
 
-        final user = await (db.select(db.userProfiles)
-              ..where((u) => u.id.equals('user_main')))
-            .getSingleOrNull();
+        final user = await (db.select(
+          db.userProfiles,
+        )..where((u) => u.id.equals('user_main'))).getSingleOrNull();
 
         final currentXp = user?.totalXp ?? 180;
-        await (db.update(db.userProfiles)..where((u) => u.id.equals('user_main')))
-            .write(UserProfilesCompanion(totalXp: Value(currentXp + questRow.xp)));
+        await (db.update(
+          db.userProfiles,
+        )..where((u) => u.id.equals('user_main'))).write(
+          UserProfilesCompanion(totalXp: Value(currentXp + questRow.xp)),
+        );
       });
 
       return QuestItem(
@@ -125,42 +156,48 @@ class GamificationRepository implements GamificationRepositoryInterface {
     final txRows = await db.select(db.transactions).get();
     final questRows = await db.select(db.quests).get();
     final allocRows = await db.select(db.allocations).get();
-    final user = await (db.select(db.userProfiles)
-          ..where((u) => u.id.equals('user_main')))
-        .getSingleOrNull();
+    final user = await (db.select(
+      db.userProfiles,
+    )..where((u) => u.id.equals('user_main'))).getSingleOrNull();
     final unlockedRows = await db.select(db.unlockedAchievements).get();
 
     final transactions = txRows
-        .map((r) => TransactionItem(
-              id: r.id,
-              name: r.name,
-              amount: r.amount,
-              date: r.date,
-              category: r.category,
-              cleared: r.cleared,
-              notes: r.notes,
-              expGained: r.expGained,
-            ))
+        .map(
+          (r) => TransactionItem(
+            id: r.id,
+            name: r.name,
+            amount: r.amount,
+            date: r.date,
+            category: r.category,
+            cleared: r.cleared,
+            notes: r.notes,
+            expGained: r.expGained,
+          ),
+        )
         .toList();
 
     final quests = questRows
-        .map((r) => QuestItem(
-              id: r.id,
-              title: r.title,
-              date: r.date,
-              xp: r.xp,
-              done: r.done,
-              category: r.category,
-            ))
+        .map(
+          (r) => QuestItem(
+            id: r.id,
+            title: r.title,
+            date: r.date,
+            xp: r.xp,
+            done: r.done,
+            category: r.category,
+          ),
+        )
         .toList();
 
     final allocations = allocRows
-        .map((r) => AllocationItem(
-              id: r.id,
-              label: r.label,
-              percent: r.percent,
-              color: r.color,
-            ))
+        .map(
+          (r) => AllocationItem(
+            id: r.id,
+            label: r.label,
+            percent: r.percent,
+            color: r.color,
+          ),
+        )
         .toList();
 
     final streakDays = user?.streakDays ?? 1;
@@ -178,7 +215,9 @@ class GamificationRepository implements GamificationRepositoryInterface {
       await db.transaction(() async {
         final nowStr = user?.lastActiveDate ?? '';
         for (final ach in result.newlyUnlocked) {
-          await db.into(db.unlockedAchievements).insert(
+          await db
+              .into(db.unlockedAchievements)
+              .insert(
                 UnlockedAchievementsCompanion.insert(
                   id: ach.id,
                   unlockedAt: nowStr,
@@ -189,10 +228,11 @@ class GamificationRepository implements GamificationRepositoryInterface {
 
         if (result.bonusXp > 0) {
           final currentXp = user?.totalXp ?? 180;
-          await (db.update(db.userProfiles)
-                ..where((u) => u.id.equals('user_main')))
-              .write(UserProfilesCompanion(
-                  totalXp: Value(currentXp + result.bonusXp)));
+          await (db.update(
+            db.userProfiles,
+          )..where((u) => u.id.equals('user_main'))).write(
+            UserProfilesCompanion(totalXp: Value(currentXp + result.bonusXp)),
+          );
         }
       });
     }

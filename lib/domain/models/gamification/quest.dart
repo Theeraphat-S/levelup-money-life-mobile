@@ -95,7 +95,7 @@ class QuestItem {
         title: 'ตรวจสอบสัดส่วนการจัดสรรงบประมาณ 50/30/20',
         date: today,
         xp: 20,
-        done: true,
+        done: false,
         category: 'daily',
       ),
       QuestItem(

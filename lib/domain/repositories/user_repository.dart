@@ -1,4 +1,4 @@
-﻿import 'package:drift/drift.dart';
+import 'package:drift/drift.dart';
 import 'package:intl/intl.dart';
 import 'package:levelup_money_life/domain/datasource/app_database.dart';
 import 'package:levelup_money_life/domain/models/gamification/user_profile.dart';
@@ -6,6 +6,7 @@ import 'package:levelup_money_life/domain/services/gamification_engine.dart';
 
 abstract class UserRepositoryInterface {
   Future<UserProfile> getUserProfile();
+  Stream<UserProfile> watchUserProfile();
   Future<UserProfile> addExp(int expToAdd, {int coinsToAdd = 0});
   Future<UserProfile> checkInDaily();
   Future<UserProfile> updateUnlockedAchievements(List<String> achievementIds);
@@ -34,6 +35,19 @@ class UserRepository implements UserRepositoryInterface {
           DateFormat('yyyy-MM-dd').format(DateTime.now()),
       unlockedAchievementIds: unlockedIds,
     );
+  }
+
+  @override
+  Stream<UserProfile> watchUserProfile() {
+    // Re-read the profile whenever the profile row or unlocked achievements
+    // change, so XP / streak / badges stay live on every screen.
+    return db
+        .customSelect(
+          'SELECT 1',
+          readsFrom: {db.userProfiles, db.unlockedAchievements},
+        )
+        .watch()
+        .asyncMap((_) => getUserProfile());
   }
 
   @override

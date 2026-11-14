@@ -1,4 +1,4 @@
-﻿import 'package:equatable/equatable.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:levelup_money_life/domain/models/budget/allocation_item.dart';
 import 'package:levelup_money_life/domain/models/transaction/category_item.dart';
@@ -6,6 +6,7 @@ import 'package:levelup_money_life/domain/models/transaction/transaction_item.da
 import 'package:levelup_money_life/domain/repositories/budget_repository.dart';
 import 'package:levelup_money_life/domain/repositories/gamification_repository.dart';
 import 'package:levelup_money_life/domain/repositories/transaction_repository.dart';
+import 'package:levelup_money_life/shared/utils/stream_utils.dart';
 
 // State
 enum BudgetStatus { initial, loading, success, failure }
@@ -90,12 +91,15 @@ class BudgetBloc extends Bloc<BudgetEvent, BudgetState> {
   final TransactionRepositoryInterface transactionRepository;
   final GamificationRepositoryInterface gamificationRepository;
 
+  /// Last month the budget view was scoped to; reloads without a month keep it.
+  String? _monthFilter;
+
   BudgetBloc({
     required this.budgetRepository,
     required this.transactionRepository,
     required this.gamificationRepository,
   }) : super(const BudgetState()) {
-    on<LoadBudgetDataEvent>(_onLoadBudgetData);
+    on<LoadBudgetDataEvent>(_onLoadBudgetData, transformer: restartable());
     on<UpdateAllocationsEvent>(_onUpdateAllocations);
     on<UpdateMonthlyIncomeEvent>(_onUpdateMonthlyIncome);
   }
@@ -104,13 +108,14 @@ class BudgetBloc extends Bloc<BudgetEvent, BudgetState> {
     LoadBudgetDataEvent event,
     Emitter<BudgetState> emit,
   ) async {
+    _monthFilter = event.monthFilter ?? _monthFilter;
     emit(state.copyWith(status: BudgetStatus.loading));
     try {
       final income = await budgetRepository.getMonthlyIncome();
       final allocations = await budgetRepository.getAllocations();
 
       await emit.forEach<List<TransactionItem>>(
-        transactionRepository.watchTransactions(monthFilter: event.monthFilter),
+        transactionRepository.watchTransactions(monthFilter: _monthFilter),
         onData: (transactions) {
           double needsSpent = 0.0;
           double wantsSpent = 0.0;

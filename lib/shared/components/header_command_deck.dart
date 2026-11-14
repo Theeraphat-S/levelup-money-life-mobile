@@ -1,12 +1,7 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:levelup_money_life/feature/budget/bloc/budget_bloc.dart';
-import 'package:levelup_money_life/feature/dashboard/bloc/dashboard_bloc.dart';
-import 'package:levelup_money_life/feature/dashboard/bloc/dashboard_event.dart';
 import 'package:levelup_money_life/feature/gamification/bloc/gamification_bloc.dart';
 import 'package:levelup_money_life/feature/gamification/bloc/gamification_state.dart';
-import 'package:levelup_money_life/feature/transaction/bloc/transaction_bloc.dart';
-import 'package:levelup_money_life/feature/transaction/bloc/transaction_event.dart';
 import 'package:levelup_money_life/shared/bloc/app/app_bloc.dart';
 import 'package:levelup_money_life/shared/components/settings_sheet.dart';
 import 'package:levelup_money_life/shared/tokens/p_colors.dart';
@@ -35,10 +30,8 @@ class HeaderCommandDeck extends StatelessWidget implements PreferredSizeWidget {
       }
 
       final newMonthStr = '$year-${month.toString().padLeft(2, '0')}';
+      // Month-scoped blocs reload via the activeMonth listener in MyApp.
       context.read<AppGlobalBloc>().add(ChangeActiveMonthEvent(newMonthStr));
-      context.read<DashboardBloc>().add(LoadDashboardData(monthFilter: newMonthStr));
-      context.read<TransactionBloc>().add(LoadTransactionsEvent(monthFilter: newMonthStr));
-      context.read<BudgetBloc>().add(LoadBudgetDataEvent(monthFilter: newMonthStr));
     } catch (_) {}
   }
 

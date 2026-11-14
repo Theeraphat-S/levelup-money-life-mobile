@@ -1,4 +1,4 @@
-﻿import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:levelup_money_life/domain/repositories/gamification_repository.dart';
 import 'package:levelup_money_life/domain/repositories/user_repository.dart';
 import 'package:levelup_money_life/feature/gamification/bloc/gamification_event.dart';
@@ -23,6 +23,7 @@ class GamificationBloc extends Bloc<GamificationEvent, GamificationState> {
   ) async {
     emit(state.copyWith(status: GamificationStatus.loading));
     try {
+      await gamificationRepository.refreshDailyQuests();
       final evalResult = await gamificationRepository.evaluateAchievements();
       final user = await userRepository.getUserProfile();
       final quests = await gamificationRepository.getDailyQuests();

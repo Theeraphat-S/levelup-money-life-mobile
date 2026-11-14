@@ -1,4 +1,4 @@
-﻿import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:levelup_money_life/domain/models/transaction/transaction_item.dart';
 import 'package:levelup_money_life/domain/repositories/gamification_repository.dart';
 import 'package:levelup_money_life/domain/repositories/transaction_repository.dart';
@@ -6,6 +6,7 @@ import 'package:levelup_money_life/domain/repositories/user_repository.dart';
 import 'package:levelup_money_life/domain/services/gamification_engine.dart';
 import 'package:levelup_money_life/feature/transaction/bloc/transaction_event.dart';
 import 'package:levelup_money_life/feature/transaction/bloc/transaction_state.dart';
+import 'package:levelup_money_life/shared/utils/stream_utils.dart';
 
 class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   final TransactionRepositoryInterface transactionRepository;
@@ -17,7 +18,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     required this.userRepository,
     required this.gamificationRepository,
   }) : super(const TransactionState()) {
-    on<LoadTransactionsEvent>(_onLoadTransactions);
+    on<LoadTransactionsEvent>(_onLoadTransactions, transformer: restartable());
     on<AddTransactionItemEvent>(_onAddTransaction);
     on<UpdateTransactionItemEvent>(_onUpdateTransaction);
     on<DeleteTransactionItemEvent>(_onDeleteTransaction);
